@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pay Per Qualified Appointment | Agentikly</title>
+<title>Pay Per Qualified Appointment | Agentiklabs</title>
 <link rel="icon" type="image/x-icon" href="media/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="media/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="media/favicon-16x16.png">
@@ -32,10 +32,10 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&family=Fraunces:opsz,wght,SOFT@9..144,600..900,50..100&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Exact Agentikly palette */
-    --bg:        #f5f5ec;   /* Agentikly light background (main) */
+    /* Exact Agentiklabs palette */
+    --bg:        #f5f5ec;   /* Agentiklabs light background (main) */
     --bg-dark:   #eeede0;   /* subtle deeper band (strip / problem / book / footer) */
-    --bg-deep:   #092328;   /* Agentikly dark teal (buttons + dark bands) */
+    --bg-deep:   #092328;   /* Agentiklabs dark teal (buttons + dark bands) */
     --bg-card:   #ffffff;   /* white cards */
     --teal:      #014a55;   /* accent + text emphasis */
     --lime-glow: #5a8c00;   /* olive glow behind dark buttons */
@@ -43,9 +43,9 @@
     --cream:     #fcffdf;   /* light text on dark bands */
     --white:     #ffffff;
     --dark-text: #111a0f;
-    --ink:       #111a0f;   /* Agentikly --dark-text (main text) */
-    --muted:     rgba(17,26,15,0.55);   /* Agentikly --muted-dark */
-    --border:    rgba(0,0,0,0.1);       /* Agentikly --border-dark */
+    --ink:       #111a0f;   /* Agentiklabs --dark-text (main text) */
+    --muted:     rgba(17,26,15,0.55);   /* Agentiklabs --muted-dark */
+    --border:    rgba(0,0,0,0.1);       /* Agentiklabs --border-dark */
     --font:      'DM Sans', system-ui, sans-serif;
     --font-head: 'Fraunces', Georgia, 'Times New Roman', serif; /* swap to 'Recoleta' if licensed */
     --radius:    14px;
@@ -92,8 +92,8 @@
   .hero-deco svg{position:absolute;top:0;left:0;width:100%;height:100%}
   .hero > .wrap{position:relative;z-index:1}
 
-  /* trust row under the CTA */
-  .trust-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:38px;flex-wrap:wrap}
+  /* trust row: sits between the subhead and the founder intro */
+  .trust-row{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 36px;flex-wrap:wrap}
   .trust-avatars{display:flex;flex:0 0 auto}
   .trust-avatars .avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--cream);
     display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
@@ -243,7 +243,7 @@
 
 <!-- ===== FLOATING NAV ===== -->
 <nav class="floatnav" aria-label="Section navigation">
-  <a class="fn-brand" href="#top">Agentikly<span>.</span></a>
+  <a class="fn-brand" href="#top">Agentiklabs<span>.</span></a>
   <div class="fn-links">
     <a href="#problem">Problem</a>
     <a href="#model">How it works</a>
@@ -272,6 +272,17 @@
     <span class="eyebrow">Performance-based lead generation</span>
     <h1>Get Sales Calls Booked For You<br><em>Pay Per Appointment Only</em></h1>
     <p class="sub">Here's who's behind it, then book a call to see if your business qualifies.</p>
+
+    <div class="trust-row">
+      <div class="trust-avatars">
+        <span class="avatar"><img src="media/image%20(8).png" alt=""></span>
+        <span class="avatar"><img src="media/rmfia-copywriter_leighton-butler-2.png" alt=""></span>
+        <span class="avatar"><img src="media/unnamed%20(9).jpg" alt=""></span>
+        <span class="avatar"><img src="media/badr-temoun.1024x1024%20(1).jpg" alt=""></span>
+        <span class="avatar"><img src="media/V5D7BVWBJRCMBDXNOETTMGCHQ4.jpeg" alt=""></span>
+      </div>
+      <p>Join the dozens of founders already working with us.</p>
+    </div>
 
     <!-- [VSL-EMBED] (TEMPORARILY DISABLED). To restore the video, delete the
       .founder-intro block below and paste one of these back in its place:
@@ -304,17 +315,6 @@
 
     <a class="btn" href="#book">Book Your Qualification Call</a>
     <span class="btn-note">Limited onboarding spots each month, we only take on offers we're confident we can fill calendars for.</span>
-
-    <div class="trust-row">
-      <div class="trust-avatars">
-        <span class="avatar"><img src="media/image%20(8).png" alt=""></span>
-        <span class="avatar"><img src="media/rmfia-copywriter_leighton-butler-2.png" alt=""></span>
-        <span class="avatar"><img src="media/unnamed%20(9).jpg" alt=""></span>
-        <span class="avatar"><img src="media/badr-temoun.1024x1024%20(1).jpg" alt=""></span>
-        <span class="avatar"><img src="media/V5D7BVWBJRCMBDXNOETTMGCHQ4.jpeg" alt=""></span>
-      </div>
-      <p>Join the founders already working with us.</p>
-    </div>
   </div>
 </header>
 
@@ -458,8 +458,8 @@
 
 <footer>
   <div class="wrap">
-    <div class="logo">Agentikly<span>.</span></div>
-    <div>© 2026 Agentikly. All rights reserved. &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Privacy</a> &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Terms</a></div>
+    <div class="logo">Agentiklabs<span>.</span></div>
+    <div>© 2026 Agentiklabs. All rights reserved. &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Privacy</a> &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Terms</a></div>
   </div>
 </footer>
 
