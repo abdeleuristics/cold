@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction preview — Editorial / Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,600..900,50..100&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:      #071c1f;
+    --bg-2:    #050f10;
+    --ink:     #14201d;      /* dark text on paper */
+    --paper:   #f4f1e6;      /* invoice paper */
+    --paper-2: #eae5d4;
+    --line:    #d8d2be;      /* hairline on paper */
+    --white:   #f6f6ee;
+    --muted:   rgba(246,246,238,0.55);
+    --accent:  #b9ff3d;      /* used sparingly */
+    --green:   #1f6f4a;      /* billable ink */
+    --font-head:'Fraunces', Georgia, serif;
+    --font-body:'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--white);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 40px}
+
+  /* preview banner */
+  .banner{background:#000;color:var(--accent);font-family:var(--font-mono);font-size:12px;letter-spacing:0.05em;padding:10px 40px;border-bottom:1px solid rgba(255,255,255,0.12)}
+
+  section{padding:110px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+
+  /* EDITORIAL section head: number in margin, no centered eyebrow */
+  .head{display:grid;grid-template-columns:90px 1fr;gap:0;margin-bottom:56px}
+  .head .no{font-family:var(--font-mono);font-size:13px;color:var(--accent);padding-top:14px;letter-spacing:0.02em}
+  .head .no small{display:block;color:var(--muted);margin-top:6px;font-size:11px;line-height:1.5}
+  .head h2{font-family:var(--font-head);font-weight:600;font-size:clamp(30px,4.4vw,50px);line-height:1.04;letter-spacing:-0.015em;font-variation-settings:"opsz" 144,"SOFT" 70;max-width:16ch}
+  .head .lede{grid-column:2;margin-top:22px;max-width:52ch;font-size:17px;color:rgba(246,246,238,0.72)}
+  .head .lede b{color:var(--white);font-weight:600}
+
+  /* PAPER invoice document */
+  .doc{background:var(--paper);color:var(--ink);border-radius:4px;padding:44px 48px;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,0.6);max-width:720px;margin-left:90px;position:relative}
+  .doc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--green);border-radius:4px 0 0 4px}
+  .doc .dochead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:8px}
+  .doc .dochead .t{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink)}
+  .doc .dochead .meta{font-family:var(--font-mono);font-size:12px;color:#5f6a63}
+
+  .row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:14px}
+  .row .desc{color:var(--ink)}
+  .row .desc small{display:block;font-family:var(--font-body);font-size:13px;color:#5f6a63;margin-top:3px;letter-spacing:0}
+  .row .amt{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:500}
+  .amt.bill{color:var(--green)}
+  .amt.zero{color:#a8a290}
+  .tag{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;vertical-align:middle;margin-left:8px}
+  .tag.b{background:rgba(31,111,74,0.14);color:var(--green)}
+  .tag.z{background:rgba(0,0,0,0.06);color:#8a8474}
+
+  .total{display:grid;grid-template-columns:1fr auto;gap:16px;padding:20px 0 4px;margin-top:6px;border-top:2px solid var(--ink);
+    font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--ink)}
+  .stamp{font-family:var(--font-head);font-style:italic;font-size:15px;color:var(--green);margin-top:18px}
+
+  /* second section — proof statement */
+  .grid2{display:grid;grid-template-columns:90px 1fr;gap:0}
+  .kpis{display:flex;gap:40px;margin:0 0 34px 90px;flex-wrap:wrap}
+  .kpi .n{font-family:var(--font-head);font-size:42px;font-weight:600;line-height:1;font-variation-settings:"opsz" 144,"SOFT" 70}
+  .kpi .l{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-top:8px;max-width:16ch}
+
+  .foot{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin:20px 0 0 90px}
+
+  @media (max-width:760px){
+    .wrap{padding:0 22px}
+    .head,.grid2{grid-template-columns:1fr}
+    .head .no{padding-top:0;margin-bottom:10px}
+    .head .lede,.doc,.kpis,.foot{grid-column:1;margin-left:0}
+    .doc{padding:28px 22px}
+    section{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">DESIGN DIRECTION PREVIEW — editorial + ledger · Fraunces / IBM Plex Sans / IBM Plex Mono · not applied to live page yet</div>
+
+<!-- ============ SECTION 1: THE MODEL AS A LEDGER ============ -->
+<section>
+  <div class="wrap">
+    <div class="head">
+      <div class="no">No. 03<small>The&nbsp;model</small></div>
+      <h2>What you're actually billed for</h2>
+      <p class="lede">Most agencies invoice for the work. We invoice for the outcome. Here's the entire pricing logic — nothing hidden behind a monthly retainer, and everything you pay maps to a <b>qualified appointment that showed up on your calendar.</b></p>
+    </div>
+
+    <div class="doc">
+      <div class="dochead">
+        <span class="t">Billing logic</span>
+        <span class="meta">per result · not per month</span>
+      </div>
+
+      <div class="row">
+        <div class="desc">Qualified appointment — prospect shows up
+          <small>Meets the criteria we agreed on, in writing, before launch.</small>
+        </div>
+        <div class="amt bill">billable <span class="tag b">counts</span></div>
+      </div>
+
+      <div class="row">
+        <div class="desc">Prospect no-shows
+          <small>Booked but didn't attend the call.</small>
+        </div>
+        <div class="amt zero">$0.00 <span class="tag z">not counted</span></div>
+      </div>
+
+      <div class="row">
+        <div class="desc">Booking that isn't a fit
+          <small>Wrong size, no budget, or not a decision-maker.</small>
+        </div>
+        <div class="amt zero">$0.00 <span class="tag z">not counted</span></div>
+      </div>
+
+      <div class="row">
+        <div class="desc">Monthly retainer
+          <small>Paying for effort, reports, "brand awareness."</small>
+        </div>
+        <div class="amt zero">— <span class="tag z">n/a</span></div>
+      </div>
+
+      <div class="total">
+        <span>You pay for</span>
+        <span>qualified results only</span>
+      </div>
+      <p class="stamp">Because we get paid per result, we can't afford to send you junk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 2: PROOF AS A STATEMENT ============ -->
+<section style="border-bottom:none">
+  <div class="wrap">
+    <div class="head">
+      <div class="no">No. 05<small>The&nbsp;proof</small></div>
+      <h2>One client's month, itemized</h2>
+      <p class="lede">This is what a statement looks like when you only get charged for what shows up. Replace the placeholder figures with a real client month.</p>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="n">XX</div><div class="l">Qualified appts booked</div></div>
+      <div class="kpi"><div class="n">XX%</div><div class="l">Showed up to the call</div></div>
+      <div class="kpi"><div class="n">$X.XM</div><div class="l">Pipeline created</div></div>
+    </div>
+
+    <div class="doc">
+      <div class="dochead">
+        <span class="t">Statement · Client A</span>
+        <span class="meta">30 days</span>
+      </div>
+      <div class="row">
+        <div class="desc">Qualified appointments — attended <small>Each one a fit prospect, on the calendar.</small></div>
+        <div class="amt bill">XX × $XXX</div>
+      </div>
+      <div class="row">
+        <div class="desc">No-shows <small>Booked, didn't attend.</small></div>
+        <div class="amt zero">$0.00</div>
+      </div>
+      <div class="row">
+        <div class="desc">Off-criteria bookings <small>Filtered out — not billed.</small></div>
+        <div class="amt zero">$0.00</div>
+      </div>
+      <div class="total">
+        <span>Billed for the month</span>
+        <span>results only</span>
+      </div>
+      <p class="stamp">Every line item is a real meeting your team took.</p>
+    </div>
+    <p class="foot">// figures are placeholders — swap for a documented client month before launch</p>
+  </div>
+</section>
+
+</body>
+</html>

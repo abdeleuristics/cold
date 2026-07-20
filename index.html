@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay Per Qualified Appointment | Agentikly</title>
+<!-- ============================================================
+  VSL FUNNEL — Performance-Based Lead Gen Offer
+  ------------------------------------------------------------
+  EDIT CHECKLIST (search for these markers):
+    [VSL-EMBED]      → drop your video embed in the hero
+    [CALENDAR-EMBED] → drop your Calendly/Cal.com embed in #book
+    [NICHE]          → swap "B2B service businesses" once niche is locked
+    [PROOF]          → replace placeholder metrics & testimonials
+  PHRASING RULES (do not break):
+    ✓ "priced per appointment, not per month" / "pricing is per result, not per month"
+    ✓ "no bloated monthly retainer, no paying for effort"
+    ✓ no-show / unqualified booking → gets REPLACED (operational guarantee)
+    ✗ NEVER claim payment timing: no "pay per appointment that shows up," "doesn't count,"
+      "costs us not you," "if we don't deliver we don't earn" — batch is invoiced upfront,
+      this is confirmed on the sales call, never on this page
+    ✗ NEVER: "no upfront cost" / "zero risk" / "pay nothing unless" / "only pay when"
+============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Headline font = Fraunces (free Google Fonts match for Recoleta).
+     To use real Recoleta instead: host the licensed files and set --font-head to 'Recoleta'. -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&family=Fraunces:opsz,wght,SOFT@9..144,600..900,50..100&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Exact Agentikly palette */
+    --bg:        #f5f5ec;   /* Agentikly light background — main */
+    --bg-dark:   #eeede0;   /* subtle deeper band (strip / problem / book / footer) */
+    --bg-deep:   #092328;   /* Agentikly dark teal — buttons + dark bands */
+    --bg-card:   #ffffff;   /* white cards */
+    --teal:      #014a55;   /* accent + text emphasis */
+    --lime-glow: #5a8c00;   /* olive glow behind dark buttons */
+    --lime:      #adff00;   /* defined for reference; never used as a fill */
+    --cream:     #fcffdf;   /* light text on dark bands */
+    --white:     #ffffff;
+    --dark-text: #111a0f;
+    --ink:       #111a0f;   /* Agentikly --dark-text (main text) */
+    --muted:     rgba(17,26,15,0.55);   /* Agentikly --muted-dark */
+    --border:    rgba(0,0,0,0.1);       /* Agentikly --border-dark */
+    --font:      'DM Sans', system-ui, sans-serif;
+    --font-head: 'Fraunces', Georgia, 'Times New Roman', serif; /* swap to 'Recoleta' if licensed */
+    --radius:    14px;
+    --max:       1060px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  section{padding:88px 0}
+  h1,h2{font-family:var(--font-head);line-height:1.08;font-weight:900;letter-spacing:-0.01em;font-variation-settings:"opsz" 144,"SOFT" 80}
+  h3{line-height:1.12;font-weight:900;letter-spacing:-0.02em}
+  h2{font-size:clamp(28px,4.2vw,44px)}
+  .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--teal);flex:0 0 auto}
+  .muted{color:var(--muted)}
+  section[id]{scroll-margin-top:96px}
+
+  /* floating nav (contained pill, sticks below the strip) */
+  .floatnav{position:sticky;top:12px;z-index:100;width:fit-content;max-width:calc(100% - 28px);margin:10px auto 0;
+    display:flex;align-items:center;gap:22px;
+    background:rgba(9,35,40,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:11px 11px 11px 38px;
+    box-shadow:0 16px 44px -16px rgba(9,35,40,0.55)}
+  .fn-brand{font-weight:900;font-size:17px;color:var(--white);text-decoration:none;letter-spacing:-0.01em;margin-right:4px}
+  .fn-brand span{color:var(--cream)}
+  .fn-links{display:flex;align-items:center;gap:10px}
+  .fn-links a{font-size:14px;color:rgba(255,255,255,0.62);text-decoration:none;padding:9px 24px;border-radius:999px;transition:color .15s,background .15s;white-space:nowrap}
+  .fn-links a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
+  .fn-cta{font-size:14px;font-weight:600;color:var(--bg-deep);background:var(--cream);text-decoration:none;padding:12px 28px;border-radius:999px;white-space:nowrap;transition:transform .3s ease}
+  .fn-cta:hover{transform:translateY(-2px)}
+
+  /* trust strip */
+  .strip{background:var(--bg-deep);border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0;text-align:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.62)}
+  .strip b{color:var(--cream);font-weight:700}
+
+  /* hero */
+  .hero{padding:28px 0 64px;text-align:center;background:var(--bg);position:relative}
+  .hero h1{font-size:clamp(34px,5.9vw,68px);max-width:1020px;margin:0 auto 20px;perspective:1000px}
+  .hero .eyebrow::before{content:"🚀";width:auto;height:auto;background:none;font-size:15px;line-height:1}
+
+  /* decorative line-art — abstract shapes filling the hero margins (replaces floating chips) */
+  .hero-deco{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .hero-deco svg{position:absolute;top:0;left:0;width:100%;height:100%}
+  .hero > .wrap{position:relative;z-index:1}
+
+  /* trust row under the CTA */
+  .trust-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:38px;flex-wrap:wrap}
+  .trust-avatars{display:flex;flex:0 0 auto}
+  .trust-avatars .avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+    border:2px solid var(--bg);margin-left:-10px;flex:0 0 auto;overflow:hidden}
+  .trust-avatars .avatar:first-child{margin-left:0}
+  .trust-avatars .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .trust-row p{font-size:14px;color:var(--muted);text-align:left;max-width:360px;margin:0}
+  .trust-row p strong{color:var(--ink);font-weight:700}
+  @media (max-width:560px){.trust-row{justify-content:center}.trust-row p{text-align:center;max-width:280px}}
+  /* floating teal badge — matches the nav bar color, bobs in 3D like it's on water */
+  .hero h1 em{display:inline-block;font-style:normal;color:var(--cream);background:var(--bg-deep);
+    padding:0.04em 0.42em 0.13em;border-radius:18px;margin-top:0.38em;line-height:1.05;
+    box-shadow:0 24px 50px -16px rgba(9,35,40,0.55);
+    transform-style:preserve-3d;transform-origin:50% 60%;
+    animation:floaty 7s ease-in-out infinite;will-change:transform}
+  @keyframes floaty{
+    0%   {transform:rotate(-4deg)   translateY(0)     rotateX(0deg)  rotateY(0deg)}
+    25%  {transform:rotate(-2.8deg) translateY(-9px)  rotateX(7deg)  rotateY(-4deg)}
+    50%  {transform:rotate(-4.6deg) translateY(-4px)  rotateX(0deg)  rotateY(4deg)}
+    75%  {transform:rotate(-3.4deg) translateY(-12px) rotateX(-6deg) rotateY(3deg)}
+    100% {transform:rotate(-4deg)   translateY(0)     rotateX(0deg)  rotateY(0deg)}
+  }
+  @media (prefers-reduced-motion: reduce){.hero h1 em{animation:none;transform:rotate(-4deg)}}
+  .hero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--muted);max-width:800px;margin:0 auto 40px}
+
+  /* VSL placeholder */
+  .vsl{position:relative;max-width:820px;margin:0 auto 36px;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--border);background:var(--bg-deep);
+    box-shadow:0 24px 60px -24px rgba(9,35,40,0.4);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+  .vsl .play{width:76px;height:76px;border-radius:50%;background:var(--bg-deep);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 44px -8px var(--lime-glow)}
+  .vsl .play svg{margin-left:5px}
+  .vsl .label{font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-size:13px;color:var(--teal)}
+  .vsl .hint{font-size:13px;color:var(--muted)}
+
+  /* founder intro — temporary VSL replacement: arch-shaped photo + bio, side by side */
+  .founder-intro{display:flex;align-items:center;gap:56px;text-align:left;max-width:920px;margin:0 auto 40px;padding:20px 12px}
+  .fi-shape{position:relative;flex:0 0 auto;width:190px;height:230px}
+  .fi-shape::before{content:"";position:absolute;inset:-14px 4px auto -14px;height:calc(100% + 20px);
+    border-radius:50% 50% 10% 10% / 60% 60% 8% 8%;border:2px solid var(--teal);opacity:0.4;transform:rotate(-5deg)}
+  .fi-photo{position:absolute;inset:0;border-radius:50% 50% 10% 10% / 60% 60% 8% 8%;overflow:hidden;
+    border:1px solid var(--border);box-shadow:0 24px 50px -20px rgba(9,35,40,0.4);background:var(--bg-card)}
+  .fi-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .fi-copy{flex:1 1 auto}
+  .fi-tag{display:block;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+  .fi-copy h3{font-family:var(--font-head);font-size:clamp(19px,2.3vw,25px);line-height:1.28;margin-bottom:12px;font-variation-settings:"opsz" 144,"SOFT" 70}
+  .fi-copy p{font-size:15.5px;color:var(--muted);max-width:60ch}
+  @media (max-width:760px){
+    .founder-intro{flex-direction:column;text-align:center;gap:24px;max-width:420px}
+    .fi-copy p{margin:0 auto}
+  }
+
+  /* buttons */
+  .btn{display:inline-block;background:var(--bg-deep);color:var(--white);font-weight:500;font-size:17px;
+    padding:18px 40px;border-radius:6px;text-decoration:none;transition:transform .3s ease, box-shadow .3s ease;
+    box-shadow:10px 0 57px 1px var(--lime-glow)}
+  .btn:hover{transform:translateY(-4px);box-shadow:10px 8px 66px 2px var(--lime-glow)}
+  .btn-note{display:block;margin-top:14px;font-size:14px;color:var(--muted)}
+
+  /* shared dark-section utility — alternates with light sections down the page */
+  .section-dark{background:var(--bg-deep);color:var(--cream)}
+  .section-dark h2{color:var(--cream)}
+  .section-dark .eyebrow{color:rgba(252,255,223,0.55)}
+  .section-dark .eyebrow::before{background:var(--cream)}
+
+  /* problem */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .problem ul{list-style:none;display:flex;flex-direction:column;margin-top:10px}
+  .problem li{position:relative;padding:17px 0 17px 26px;border-top:1px solid rgba(255,255,255,0.14);color:rgba(252,255,223,0.62);font-size:17px}
+  .problem li:last-child{border-bottom:1px solid rgba(255,255,255,0.14)}
+  .problem li::before{content:"";position:absolute;left:0;top:26px;width:11px;height:2px;background:var(--cream)}
+
+  /* model — light section */
+  .model{background:var(--bg)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+  .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:32px 26px}
+  .card .num{font-size:13px;font-weight:700;letter-spacing:0.14em;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .card h3{font-size:20px;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:15.5px}
+  .model-line{margin-top:40px;text-align:center;font-size:clamp(19px,2.6vw,24px);font-weight:700;color:var(--ink)}
+  .model-line span{color:var(--teal)}
+
+  /* objection kill */
+  .kill{background:var(--bg-deep);text-align:center;color:var(--cream)}
+  .kill blockquote{font-family:var(--font-head);font-size:clamp(24px,3.6vw,38px);font-weight:900;letter-spacing:-0.01em;font-variation-settings:"opsz" 144,"SOFT" 80;max-width:820px;margin:0 auto 22px;line-height:1.2;color:rgba(252,255,223,0.66)}
+  .kill blockquote span{color:var(--cream)}
+  .kill p{max-width:640px;margin:0 auto;color:rgba(255,255,255,0.75);font-size:17px}
+
+  /* proof — light section */
+  .proof{background:var(--bg)}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:48px 0 26px}
+  .metric{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:34px 20px;text-align:center}
+  .metric .big{font-size:clamp(32px,4.5vw,46px);font-weight:900;color:var(--teal)}
+  .metric .cap{font-size:14px;color:var(--muted);margin-top:6px}
+  .quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .quote{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+  .quote p{font-size:16px;color:var(--ink);margin-bottom:18px}
+  .who{display:flex;align-items:center;gap:12px}
+  .who .av{width:44px;height:44px;border-radius:50%;background:var(--teal);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--cream)}
+  .who b{display:block;font-size:15px}
+  .who small{color:var(--muted)}
+
+  /* qualifier */
+  .qual .split{gap:22px}
+  .qual .card ul{list-style:none;display:flex;flex-direction:column;margin-top:14px}
+  .qual .card li{display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--border);font-size:15.5px;color:var(--muted)}
+  .qual .card li:first-child{border-top:none}
+  .qual .yes h3{color:var(--teal)}
+  .qual .no h3{color:var(--ink)}
+  .tick,.cross{flex:0 0 auto;font-size:15px;line-height:1.5}
+  .tick{color:var(--teal)}
+  .cross{color:var(--muted)}
+
+  /* booking — light section */
+  .book{background:var(--bg);text-align:center}
+  .cal{max-width:780px;margin:44px auto 0;min-height:560px;border-radius:var(--radius);
+    border:2px dashed rgba(1,74,85,0.4);background:var(--bg-card);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+  .cal .label{font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-size:13px;color:var(--teal)}
+  .cal .hint{font-size:13px;color:var(--muted)}
+
+  /* faq — dark section */
+  .faq details{border-bottom:1px solid rgba(255,255,255,0.14);padding:22px 0}
+  .faq summary{font-size:18px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream)}
+  .faq summary::after{content:"+";color:var(--cream);font-size:24px;font-weight:400;flex:0 0 auto}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{margin-top:14px;color:rgba(252,255,223,0.62);font-size:16px;max-width:820px}
+  .faq details p em{color:var(--cream)}
+
+  footer{background:var(--bg-dark);border-top:1px solid var(--border);padding:34px 0;text-align:center;font-size:13.5px;color:var(--muted)}
+  footer .logo{font-weight:900;font-size:16px;color:var(--ink);margin-bottom:8px}
+  footer .logo span{color:var(--teal)}
+
+  @media (max-width:840px){
+    section{padding:64px 0}
+    .split,.steps,.metrics,.quotes{grid-template-columns:1fr}
+    .hero{padding:52px 0 64px}
+    .fn-links{display:none}
+    .floatnav{padding:7px 7px 7px 18px;gap:10px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TRUST STRIP ===== -->
+<div class="strip wrap-full" id="top">For B2B founders selling <b>high-ticket deals</b> that require a decision-maker on the call</div>
+
+<!-- ===== FLOATING NAV ===== -->
+<nav class="floatnav" aria-label="Section navigation">
+  <a class="fn-brand" href="#top">Agentikly<span>.</span></a>
+  <div class="fn-links">
+    <a href="#problem">Problem</a>
+    <a href="#model">How it works</a>
+    <a href="#fit">Fit</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a class="fn-cta" href="#book">Book a call</a>
+</nav>
+
+<!-- ===== 1. CALLOUT + VSL ===== -->
+<header class="hero">
+  <div class="hero-deco" aria-hidden="true">
+    <svg viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice">
+      <circle cx="130" cy="160" r="220" fill="none" stroke="var(--teal)" stroke-width="1" opacity="0.14"/>
+      <circle cx="1470" cy="640" r="260" fill="none" stroke="var(--teal)" stroke-width="1" opacity="0.12"/>
+      <path d="M 70 520 A 300 300 0 0 1 370 270" fill="none" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="2 10" opacity="0.28"/>
+      <path d="M1210 110 L1470 330" stroke="var(--teal)" stroke-width="1" opacity="0.2"/>
+      <path d="M1300 80 L1520 290" stroke="var(--teal)" stroke-width="1" opacity="0.14"/>
+      <circle cx="1210" cy="110" r="4" fill="var(--teal)" opacity="0.35"/>
+      <circle cx="1470" cy="330" r="4" fill="var(--teal)" opacity="0.35"/>
+      <circle cx="70" cy="520" r="4" fill="var(--teal)" opacity="0.3"/>
+      <circle cx="370" cy="270" r="4" fill="var(--teal)" opacity="0.3"/>
+    </svg>
+  </div>
+  <div class="wrap">
+    <span class="eyebrow">Performance-based lead generation</span>
+    <h1>Get Sales Calls Booked For You<br><em>Pay Per Appointment Only</em></h1>
+    <p class="sub">Here's who's behind it — then book a call to see if your business qualifies.</p>
+
+    <!-- [VSL-EMBED] — TEMPORARILY DISABLED. To restore the video, delete the
+      .founder-intro block below and paste one of these back in its place:
+
+      YouTube (unlisted):
+      <div style="max-width:820px;margin:0 auto 36px;aspect-ratio:16/9;border-radius:14px;overflow:hidden">
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID?rel=0&modestbranding=1" style="width:100%;height:100%;border:0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+
+      Vimeo:
+      <div style="max-width:820px;margin:0 auto 36px;aspect-ratio:16/9;border-radius:14px;overflow:hidden">
+        <iframe src="https://player.vimeo.com/video/VIDEO_ID?title=0&byline=0&portrait=0" style="width:100%;height:100%;border:0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
+
+      Self-hosted MP4:
+      <video controls playsinline preload="metadata" style="display:block;max-width:820px;width:100%;margin:0 auto 36px;aspect-ratio:16/9;border-radius:14px" src="vsl.mp4"></video>
+    ────────────────────────────────────────────────────────────── -->
+
+    <div class="founder-intro">
+      <div class="fi-shape">
+        <div class="fi-photo"><img src="media/profile.jpg" alt="Founder"></div>
+      </div>
+      <div class="fi-copy">
+        <span class="fi-tag">Who's behind this</span>
+        <h3>I'm Abdel — I built this after watching too many founders bleed cash on customer acquisition.</h3>
+        <p>I've built multiple agencies, and in every one the growth engine was the same: outbound. Over the years I've cracked how to consistently book appointments with qualified decision-makers — people who actually show up, not just fill a calendar. Now I'm putting that exact system to work for B2B founders on a pure performance basis, priced per qualified ICP who shows up, not a monthly retainer. It's proven — first in our own companies, then for dozens of other founders.</p>
+      </div>
+    </div>
+    <!-- end [VSL-EMBED] -->
+
+    <a class="btn" href="#book">Book Your Qualification Call</a>
+    <span class="btn-note">Limited onboarding spots each month, we only take on offers we're confident we can fill calendars for.</span>
+
+    <div class="trust-row">
+      <div class="trust-avatars">
+        <span class="avatar"><img src="media/image%20(8).png" alt=""></span>
+        <span class="avatar"><img src="media/rmfia-copywriter_leighton-butler-2.png" alt=""></span>
+        <span class="avatar"><img src="media/unnamed%20(9).jpg" alt=""></span>
+        <span class="avatar"><img src="media/badr-temoun.1024x1024%20(1).jpg" alt=""></span>
+        <span class="avatar"><img src="media/V5D7BVWBJRCMBDXNOETTMGCHQ4.jpeg" alt=""></span>
+      </div>
+      <p>Join the founders already working with us.</p>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 2. PROBLEM ===== -->
+<section class="problem section-dark" id="problem">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">The problem</span>
+      <h2>You're paying for marketing <em style="font-style:normal;color:var(--lime-glow)">effort</em>. You should be paying for outcomes.</h2>
+    </div>
+    <ul>
+      <li>A bloated monthly retainer that gets invoiced whether appointments land or not.</li>
+      <li>Reports full of impressions, clicks, and "brand awareness" — and a calendar that stays empty.</li>
+      <li>"Leads" that never answer the phone, have no budget, or were never a fit in the first place.</li>
+      <li>Three-month "ramp-up periods" that quietly become six.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 3. OFFER / PERFORMANCE MODEL ===== -->
+<section class="model" id="model">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h2>A simple model: qualified appointments, priced per result</h2>
+    <div class="steps">
+      <div class="card">
+        <div class="num">Step 01</div>
+        <h3>We define "qualified" together</h3>
+        <p>Before anything launches, we agree in writing on exactly what a qualified appointment looks like for your business — industry, size, budget, decision-maker. No ambiguity, no arguing later.</p>
+      </div>
+      <div class="card">
+        <div class="num">Step 02</div>
+        <h3>We build and run the whole system</h3>
+        <p>Targeting, outreach, copy, follow-up, scheduling. Your team touches nothing until a fit prospect is booked on your calendar.</p>
+      </div>
+      <div class="card">
+        <div class="num">Step 03</div>
+        <h3>You pay for outcomes, not effort</h3>
+        <p>Every dollar is tied to a qualified ICP prospect who shows up to your call — not hours worked, not campaigns launched. If one doesn't meet the bar or doesn't show, we replace it.</p>
+      </div>
+    </div>
+    <p class="model-line">Every dollar you spend maps to <span>a real prospect, in a real meeting, on your calendar.</span></p>
+  </div>
+</section>
+
+<!-- ===== 4. OBJECTION KILL ===== -->
+<section class="kill">
+  <div class="wrap">
+    <blockquote>"Because we get paid per result, <span>we can't afford to send you junk leads.</span>"</blockquote>
+    <p>Our incentives are the opposite of a retainer agency's. If an appointment doesn't meet the qualification criteria we agreed on — or doesn't show up — <em>we replace it</em>. Quality control isn't a promise. It's built into the model.</p>
+  </div>
+</section>
+
+<!-- ===== 6. QUALIFIER ===== -->
+<section class="qual section-dark" id="fit">
+  <div class="wrap">
+    <span class="eyebrow">Is this for you?</span>
+    <h2>We don't work with everyone — by design</h2>
+    <div class="split" style="margin-top:44px">
+      <div class="card yes">
+        <h3>This is for you if…</h3>
+        <ul>
+          <li><span class="tick">✓</span>You sell a high-ticket B2B offer that closes on sales calls with a decision-maker in the room.</li>
+          <li><span class="tick">✓</span>Your average client is worth enough that one closed deal pays for many appointments.</li>
+          <li><span class="tick">✓</span>You (or your team) can actually take more sales calls this month.</li>
+          <li><span class="tick">✓</span>You want to buy outcomes, not activity.</li>
+        </ul>
+      </div>
+      <div class="card no">
+        <h3>This is not for you if…</h3>
+        <ul>
+          <li><span class="cross">✕</span>You're pre-revenue or still figuring out your offer.</li>
+          <li><span class="cross">✕</span>You can't take on new clients right now.</li>
+          <li><span class="cross">✕</span>You're looking for brand awareness, content, or "top of funnel presence."</li>
+          <li><span class="cross">✕</span>You want a vendor to manage, not a result to receive.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. CTA / BOOKING ===== -->
+<section class="book" id="book">
+  <div class="wrap">
+    <span class="eyebrow">Next step</span>
+    <h2>Book your qualification call</h2>
+    <p class="sub" style="max-width:640px;margin:18px auto 0;color:var(--muted);font-size:17px">
+      A 20-minute call to define what "qualified" means for your business, walk through exactly how pricing and onboarding work, and confirm we can fill your calendar. If it's not a fit, we'll tell you on the call.
+    </p>
+
+    <!-- [CALENDAR-EMBED] ────────────────────────────────────────
+      REPLACE this <div class="cal"> block with your scheduler.
+
+      Calendly inline:
+      <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-LINK/qualification-call?hide_gdpr_banner=1" style="min-width:320px;height:700px;"></div>
+      <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+      Cal.com inline:
+      <iframe src="https://cal.com/YOUR-LINK/qualification-call?embed=true" style="width:100%;height:700px;border:0;border-radius:14px"></iframe>
+    ────────────────────────────────────────────────────────────── -->
+    <div class="cal">
+      <div class="label">Calendar embed goes here</div>
+      <div class="hint">Replace this block with Calendly / Cal.com — see the [CALENDAR-EMBED] comment in the HTML</div>
+    </div>
+    <!-- end [CALENDAR-EMBED] -->
+  </div>
+</section>
+
+<!-- ===== 8. FAQ ===== -->
+<section class="faq section-dark" id="faq">
+  <div class="wrap">
+    <span class="eyebrow">FAQ</span>
+    <h2 style="margin-bottom:34px">Questions founders ask us</h2>
+
+    <details>
+      <summary>How is this different from hiring a lead gen agency on retainer?</summary>
+      <p>A retainer agency gets paid the same whether your calendar fills up or not — their incentive is to keep the contract alive. We're priced per appointment, not per month: every appointment is qualified against criteria we agree on upfront, and if one doesn't meet the bar or doesn't show, we replace it. That single difference changes everything about how the work gets done.</p>
+    </details>
+    <details>
+      <summary>What counts as a "qualified" appointment?</summary>
+      <p>Whatever we agree it means for <em>your</em> business — before launch, in writing. Typically that covers industry, company size, budget authority, and that the person on the call is a decision-maker. If a booking doesn't meet the criteria, or doesn't show up, we replace it.</p>
+    </details>
+    <details>
+      <summary>How does pricing work exactly?</summary>
+      <p>Priced per appointment — we'll walk you through the exact numbers and how onboarding works on the qualification call, because the right structure depends on your deal size and volume targets. What we can tell you now: there's no bloated monthly retainer, and every appointment is priced against the criteria we agree on upfront.</p>
+    </details>
+    <details>
+      <summary>How fast will I see appointments?</summary>
+      <p>We'll give you an honest timeline on the call based on your market and offer. What we won't do is hide behind a six-month "ramp-up period" — our model doesn't reward us for stalling.</p>
+    </details>
+    <details>
+      <summary>What do you need from me?</summary>
+      <p>About an hour during onboarding to lock in your qualification criteria and positioning, and a sales team (or you) ready to take the calls. We handle everything up to the booked meeting.</p>
+    </details>
+    <details>
+      <summary>Why do you make people book a "qualification call" first?</summary>
+      <p>Because we get paid per result, we can't afford to take on offers we can't fill calendars for. The call is us qualifying you as much as you qualifying us — that's exactly the standard we then apply to every prospect we book for you.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo">Agentikly<span>.</span></div>
+    <div>© 2026 Agentikly. All rights reserved. &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Privacy</a> &nbsp;·&nbsp; <a href="#" style="color:var(--muted)">Terms</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
