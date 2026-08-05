@@ -13,7 +13,7 @@
   ------------------------------------------------------------
   EDIT CHECKLIST (search for these markers):
     [VSL-EMBED]      → drop your video embed in the hero
-    [CALENDAR-EMBED] → Google Calendar scheduling button, already wired up in #book
+    [CALENDAR-EMBED] → Calendly inline widget, already wired up in #book
     [NICHE]          → swap "B2B service businesses" once niche is locked
     [PROOF]          → replace placeholder metrics & testimonials
   PHRASING RULES (do not break):
@@ -209,9 +209,9 @@
 
   /* booking (light section) */
   .book{background:var(--bg);text-align:center}
-  .cal{max-width:780px;margin:44px auto 0;padding:36px;border-radius:var(--radius);
-    border:1px solid var(--border);background:var(--bg-card);
-    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .cal{max-width:780px;margin:44px auto 0;padding:8px;border-radius:var(--radius);
+    border:1px solid var(--border);background:var(--bg-card);overflow:hidden}
+  .cal .calendly-inline-widget{border-radius:calc(var(--radius) - 4px);overflow:hidden}
 
   /* faq (dark section) */
   .faq details{border-bottom:1px solid rgba(255,255,255,0.14);padding:22px 0}
@@ -403,25 +403,12 @@
       A 20-minute call to define what "qualified" means for your business, walk through exactly how pricing and onboarding work, and confirm we can fill your calendar. If it's not a fit, we'll tell you on the call.
     </p>
 
-    <!-- [CALENDAR-EMBED] Google Calendar Appointment Scheduling -->
+    <!-- [CALENDAR-EMBED] Calendly inline widget -->
     <div class="cal">
-      <!-- Google Calendar Appointment Scheduling begin -->
-      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
-      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
-      <script>
-      (function() {
-        var target = document.currentScript;
-        window.addEventListener('load', function() {
-          calendar.schedulingButton.load({
-            url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0qetGzmEsTADzzoaShQA0T1rnGdDFlLvQ4M-hR3k21DAiNZSdiuU1GnN2rlYK1hZ3Iv3ff1Viv?gv=true',
-            color: '#039BE5',
-            label: 'Book an appointment',
-            target,
-          });
-        });
-      })();
-      </script>
-      <!-- end Google Calendar Appointment Scheduling -->
+      <!-- Calendly inline widget begin -->
+      <div class="calendly-inline-widget" data-url="https://calendly.com/agentiklabs/30min?hide_gdpr_banner=1&primary_color=003a36" style="min-width:320px;height:700px;"></div>
+      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+      <!-- Calendly inline widget end -->
     </div>
     <!-- end [CALENDAR-EMBED] -->
   </div>
