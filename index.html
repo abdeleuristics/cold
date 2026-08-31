@@ -15,8 +15,11 @@
   ------------------------------------------------------------
   EDIT CHECKLIST (search for these markers):
     [VSL-EMBED]      → drop your video embed in the hero
-    [CALENDAR-EMBED] → Calendly inline widget, already wired up in #book
     [NICHE]          → swap "B2B service businesses" once niche is locked
+    OPT-IN: all forms/calendars/booking buttons were removed by design.
+    The GoHighLevel chat widget (bottom of body) is the only opt-in on
+    this page. Don't re-add a Calendly/Cal.com embed or a "Book a call"
+    button without removing this note.
     [PROOF]          → replace placeholder metrics & testimonials
   PHRASING RULES (do not break):
     ✓ "priced per appointment, not per month" / "pricing is per result, not per month"
@@ -77,8 +80,6 @@
   .fn-links{display:flex;align-items:center;gap:10px}
   .fn-links a{font-size:14px;color:rgba(255,255,255,0.62);text-decoration:none;padding:9px 24px;border-radius:999px;transition:color .15s,background .15s;white-space:nowrap}
   .fn-links a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
-  .fn-cta{font-size:14px;font-weight:600;color:var(--bg-deep);background:var(--cream);text-decoration:none;padding:12px 28px;border-radius:999px;white-space:nowrap;transition:transform .3s ease}
-  .fn-cta:hover{transform:translateY(-2px)}
 
   /* trust strip */
   .strip{background:var(--bg-deep);border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0;text-align:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.62)}
@@ -148,13 +149,6 @@
     .fi-copy p{margin:0 auto}
   }
 
-  /* buttons */
-  .btn{display:inline-block;background:var(--bg-deep);color:var(--white);font-weight:500;font-size:17px;
-    padding:18px 40px;border-radius:6px;text-decoration:none;transition:transform .3s ease, box-shadow .3s ease;
-    box-shadow:10px 0 57px 1px var(--lime-glow)}
-  .btn:hover{transform:translateY(-4px);box-shadow:10px 8px 66px 2px var(--lime-glow)}
-  .btn-note{display:block;margin-top:14px;font-size:14px;color:var(--muted)}
-
   /* shared dark-section utility: alternates with light sections down the page */
   .section-dark{background:var(--bg-deep);color:var(--cream)}
   .section-dark h2{color:var(--cream)}
@@ -209,12 +203,6 @@
   .tick{color:var(--teal)}
   .cross{color:var(--muted)}
 
-  /* booking (light section) */
-  .book{background:var(--bg);text-align:center}
-  .cal{max-width:780px;margin:44px auto 0;padding:8px;border-radius:var(--radius);
-    border:1px solid var(--border);background:var(--bg-card);overflow:hidden}
-  .cal .calendly-inline-widget{border-radius:calc(var(--radius) - 4px);overflow:hidden}
-
   /* faq (dark section) */
   .faq details{border-bottom:1px solid rgba(255,255,255,0.14);padding:22px 0}
   .faq summary{font-size:18px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream)}
@@ -250,7 +238,6 @@
     <a href="#fit">Fit</a>
     <a href="#faq">FAQ</a>
   </div>
-  <a class="fn-cta" href="#book">Book a call</a>
 </nav>
 
 <!-- ===== 1. CALLOUT + VSL ===== -->
@@ -312,9 +299,6 @@
       </div>
     </div>
     <!-- end [VSL-EMBED] -->
-
-    <a class="btn" href="#book">Book Your Qualification Call</a>
-    <span class="btn-note">Limited onboarding spots each month, we only take on offers we're confident we can fill calendars for.</span>
   </div>
 </header>
 
@@ -393,26 +377,6 @@
         </ul>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ===== 7. CTA / BOOKING ===== -->
-<section class="book" id="book">
-  <div class="wrap">
-    <span class="eyebrow">Next step</span>
-    <h2>Book your qualification call</h2>
-    <p class="sub" style="max-width:640px;margin:18px auto 0;color:var(--muted);font-size:17px">
-      A 20-minute call to define what "qualified" means for your business, walk through exactly how pricing and onboarding work, and confirm we can fill your calendar. If it's not a fit, we'll tell you on the call.
-    </p>
-
-    <!-- [CALENDAR-EMBED] Calendly inline widget -->
-    <div class="cal">
-      <!-- Calendly inline widget begin -->
-      <div class="calendly-inline-widget" data-url="https://calendly.com/agentiklabs/30min?hide_gdpr_banner=1&primary_color=003a36" style="min-width:320px;height:700px;"></div>
-      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-      <!-- Calendly inline widget end -->
-    </div>
-    <!-- end [CALENDAR-EMBED] -->
   </div>
 </section>
 
