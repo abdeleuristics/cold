@@ -20,10 +20,9 @@
     business owners, all within the zip codes the cleaning company serves.
     No revenue/size tier: any commercial cleaning or janitorial company is
     a fit; residential-only cleaners are not.
-    OPT-IN: all forms/calendars/booking buttons were removed by design.
-    The GoHighLevel chat widget (bottom of body) is the only opt-in on
-    this page. Don't re-add a Calendly/Cal.com embed or a "Book a call"
-    button without removing this note.
+    OPT-IN: Calendly inline widget in #book, plus "Book a call" buttons
+    in the nav and hero. The GoHighLevel chat widget was tried and then
+    removed — don't re-add it without asking first.
     [PROOF]          → replace placeholder metrics & testimonials
   PHRASING RULES (do not break):
     ✓ "walkthrough(s)" is the unit, not "appointment"/"call" — never say
@@ -87,6 +86,8 @@
   .fn-links{display:flex;align-items:center;gap:10px}
   .fn-links a{font-size:14px;color:rgba(255,255,255,0.62);text-decoration:none;padding:9px 24px;border-radius:999px;transition:color .15s,background .15s;white-space:nowrap}
   .fn-links a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
+  .fn-cta{font-size:14px;font-weight:600;color:var(--bg-deep);background:var(--cream);text-decoration:none;padding:12px 28px;border-radius:999px;white-space:nowrap;transition:transform .3s ease}
+  .fn-cta:hover{transform:translateY(-2px)}
 
   /* trust strip */
   .strip{background:var(--bg-deep);border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0;text-align:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.62)}
@@ -145,6 +146,13 @@
     .fi-copy p{margin:0 auto}
   }
 
+  /* buttons */
+  .btn{display:inline-block;background:var(--bg-deep);color:var(--white);font-weight:500;font-size:17px;
+    padding:18px 40px;border-radius:6px;text-decoration:none;transition:transform .3s ease, box-shadow .3s ease;
+    box-shadow:10px 0 57px 1px var(--lime-glow)}
+  .btn:hover{transform:translateY(-4px);box-shadow:10px 8px 66px 2px var(--lime-glow)}
+  .btn-note{display:block;margin-top:14px;font-size:14px;color:var(--muted)}
+
   /* shared dark-section utility: alternates with light sections down the page */
   .section-dark{background:var(--bg-deep);color:var(--cream)}
   .section-dark h2{color:var(--cream)}
@@ -199,6 +207,12 @@
   .tick{color:var(--teal)}
   .cross{color:var(--muted)}
 
+  /* booking (light section) */
+  .book{background:var(--bg);text-align:center}
+  .cal{max-width:780px;margin:44px auto 0;padding:8px;border-radius:var(--radius);
+    border:1px solid var(--border);background:var(--bg-card);overflow:hidden}
+  .cal .calendly-inline-widget{border-radius:calc(var(--radius) - 4px);overflow:hidden}
+
   /* faq (dark section) */
   .faq details{border-bottom:1px solid rgba(255,255,255,0.14);padding:22px 0}
   .faq summary{font-size:18px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream)}
@@ -234,6 +248,7 @@
     <a href="#fit">Fit</a>
     <a href="#faq">FAQ</a>
   </div>
+  <a class="fn-cta" href="#book">Book a call</a>
 </nav>
 
 <!-- ===== 1. CALLOUT + VSL ===== -->
@@ -254,7 +269,7 @@
   <div class="wrap">
     <span class="eyebrow">Performance-based walkthrough generation</span>
     <h1>We Book Walkthroughs For Your Cleaning Company<br><em>20+ Every Month, Guaranteed</em></h1>
-    <p class="sub">Here's who's behind it, then reach out to see if we serve your area.</p>
+    <p class="sub">Here's who's behind it, then book a call to see if we serve your area.</p>
 
     <!-- [VSL-EMBED] (TEMPORARILY DISABLED). To restore the video, delete the
       .founder-intro block below and paste one of these back in its place:
@@ -284,6 +299,9 @@
       </div>
     </div>
     <!-- end [VSL-EMBED] -->
+
+    <a class="btn" href="#book">Book a Call</a>
+    <span class="btn-note">Limited onboarding spots each month, we only take on cleaning companies we're confident we can deliver walkthroughs for.</span>
   </div>
 </header>
 
@@ -364,6 +382,24 @@
   </div>
 </section>
 
+<!-- ===== 7. CTA / BOOKING ===== -->
+<section class="book" id="book">
+  <div class="wrap">
+    <span class="eyebrow">Next step</span>
+    <h2>Book a call to see if we serve your area</h2>
+    <p class="sub" style="max-width:640px;margin:18px auto 0;color:var(--muted);font-size:17px">
+      A quick call to confirm the zip codes you serve, define what counts as a decision-maker for your business, and walk through exactly how the walkthroughs and onboarding work. If it's not a fit, we'll tell you on the call.
+    </p>
+
+    <div class="cal">
+      <!-- Calendly inline widget begin -->
+      <div class="calendly-inline-widget" data-url="https://calendly.com/agentiklabs/30min?hide_gdpr_banner=1&primary_color=003a36" style="min-width:320px;height:700px;"></div>
+      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+      <!-- Calendly inline widget end -->
+    </div>
+  </div>
+</section>
+
 <!-- ===== 8. FAQ ===== -->
 <section class="faq section-dark" id="faq">
   <div class="wrap">
@@ -380,19 +416,19 @@
     </details>
     <details>
       <summary>How does pricing work exactly?</summary>
-      <p>Priced per walkthrough: we'll walk you through the exact numbers and how onboarding works when we talk, because the right structure depends on your service area and volume targets. What we can tell you now: there's no bloated monthly retainer, and you get at least 20 walkthroughs a month.</p>
+      <p>Priced per walkthrough: we'll walk you through the exact numbers and how onboarding works on the call, because the right structure depends on your service area and volume targets. What we can tell you now: there's no bloated monthly retainer, and you get at least 20 walkthroughs a month.</p>
     </details>
     <details>
       <summary>How fast will I see walkthroughs?</summary>
-      <p>We'll give you an honest timeline based on your service area and market. What we won't do is hide behind a six-month "ramp-up period." Our model doesn't reward us for stalling.</p>
+      <p>We'll give you an honest timeline on the call based on your service area and market. What we won't do is hide behind a six-month "ramp-up period." Our model doesn't reward us for stalling.</p>
     </details>
     <details>
       <summary>What do you need from me?</summary>
       <p>About 20 minutes during onboarding to lock in your service area and decision-maker criteria, and a team ready to run the walkthroughs. We handle everything up to the walkthrough itself.</p>
     </details>
     <details>
-      <summary>Why do you want to talk before starting?</summary>
-      <p>Because we only get paid for walkthroughs, we can't afford to take on cleaning companies we can't fill calendars for. Reaching out first is us qualifying you as much as you qualifying us. That's exactly the standard we then apply to every walkthrough we book for you.</p>
+      <summary>Why do you make people book a call first?</summary>
+      <p>Because we only get paid for walkthroughs, we can't afford to take on cleaning companies we can't fill calendars for. The call is us qualifying you as much as you qualifying us. That's exactly the standard we then apply to every walkthrough we book for you.</p>
     </details>
   </div>
 </section>
@@ -403,9 +439,6 @@
     <div>© 2026 Agentiklabs. All rights reserved. &nbsp;·&nbsp; <a href="privacy.html" style="color:var(--muted)">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" style="color:var(--muted)">Terms</a></div>
   </div>
 </footer>
-
-<!-- GoHighLevel A2P 10DLC text opt-in chat widget (compliance) -->
-<script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6a9599bb4670f15bdde16c33" data-source="WEB_USER"></script>
 
 </body>
 </html>
