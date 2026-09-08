@@ -86,6 +86,9 @@
   .fn-links{display:flex;align-items:center;gap:10px}
   .fn-links a{font-size:14px;color:rgba(255,255,255,0.62);text-decoration:none;padding:9px 24px;border-radius:999px;transition:color .15s,background .15s;white-space:nowrap}
   .fn-links a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
+  .fn-page{font-size:14px;font-weight:500;color:rgba(255,255,255,0.86);text-decoration:none;padding:11px 24px;border-radius:999px;white-space:nowrap;
+    border:1px solid rgba(255,255,255,0.28);transition:color .15s,background .15s,border-color .15s}
+  .fn-page:hover{color:var(--white);border-color:var(--cream);background:rgba(255,255,255,0.10)}
   .fn-cta{font-size:14px;font-weight:600;color:var(--bg-deep);background:var(--cream);text-decoration:none;padding:12px 28px;border-radius:999px;white-space:nowrap;transition:transform .3s ease}
   .fn-cta:hover{transform:translateY(-2px)}
 
@@ -230,7 +233,15 @@
     .split,.steps,.metrics,.quotes{grid-template-columns:1fr}
     .hero{padding:52px 0 64px}
     .fn-links{display:none}
+    .fn-page{padding:9px 16px;font-size:13px}
     .floatnav{padding:7px 7px 7px 18px;gap:10px}
+  }
+  @media (max-width:560px){
+    /* three items in the pill on a phone — tighten so nothing clips */
+    .floatnav{padding:6px 6px 6px 14px;gap:7px}
+    .fn-brand{font-size:15px;margin-right:0}
+    .fn-page{padding:8px 12px;font-size:12.5px}
+    .fn-cta{padding:9px 16px;font-size:13px}
   }
 </style>
 </head>
@@ -248,6 +259,7 @@
     <a href="#fit">Fit</a>
     <a href="#faq">FAQ</a>
   </div>
+  <a class="fn-page" href="strategy.html">Strategy</a>
   <a class="fn-cta" href="#book">Book a call</a>
 </nav>
 
