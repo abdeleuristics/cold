@@ -63,19 +63,15 @@
   .hero .lede{font-size:19px;color:var(--muted);max-width:62ch}
   .hero .lede strong{color:var(--ink)}
 
-  /* comparison table */
-  .compare-wrap{overflow-x:auto;margin-top:36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card)}
-  .compare{width:100%;border-collapse:collapse;min-width:760px}
-  .compare th,.compare td{text-align:left;padding:18px 20px;font-size:14.5px;vertical-align:top;line-height:1.5}
-  .compare thead th{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;
-    letter-spacing:0.05em;border-bottom:2px solid var(--border);font-variation-settings:"opsz" 60,"SOFT" 60}
-  .compare tbody tr{border-bottom:1px solid var(--border)}
-  .compare tbody tr:last-child{border-bottom:none}
-  .compare td:first-child,.compare th:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
-  .compare td{color:var(--muted)}
-  .compare tr.us{background:rgba(1,74,85,0.07)}
-  .compare tr.us td{color:var(--ink)}
-  .compare tr.us td:first-child{color:var(--teal)}
+  /* comparison — flowing prose, one entry per channel, no labeled columns */
+  .compare-list{margin-top:32px;display:flex;flex-direction:column}
+  .compare-item{padding:26px 0;border-top:1px solid rgba(255,255,255,0.14)}
+  .compare-item:last-child{border-bottom:1px solid rgba(255,255,255,0.14)}
+  .compare-item h3{font-family:var(--font-head);font-size:18px;font-weight:700;color:rgba(252,255,223,0.92);margin-bottom:8px;font-variation-settings:"opsz" 60,"SOFT" 60}
+  .compare-item p{color:rgba(252,255,223,0.68);margin:0;font-size:15.5px}
+  .compare-item.us{background:rgba(255,255,255,0.07);border-radius:12px;padding:26px 24px;border-top:none;margin:6px 0 20px}
+  .compare-item.us h3{color:var(--cream)}
+  .compare-item.us p{color:rgba(252,255,223,0.88)}
 
   /* dark section utility */
   .dark{background:var(--bg-deep);color:rgba(252,255,223,0.82)}
@@ -153,7 +149,6 @@
   <div class="wrap">
     <span class="eyebrow">For commercial cleaning &amp; janitorial business owners</span>
     <h1>Here's Exactly How We Book You Walkthroughs</h1>
-    <p class="lede">No ad spend. No guesswork. Just qualified walkthroughs with real decision-makers, in the zip codes you actually serve.</p>
   </div>
 </section>
 
@@ -161,7 +156,7 @@
 <section style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
   <div class="wrap">
     <span class="eyebrow">How it works</span>
-    <h2>Three Steps. No Ad Spend. No Guesswork.</h2>
+    <h2>Just Three Steps.</h2>
     <div class="steps">
       <div class="card">
         <div class="num">Step 01</div>
@@ -268,56 +263,35 @@
     <h2>Here's What Every Other Option Actually Costs You</h2>
     <p style="max-width:60ch;color:rgba(252,255,223,0.75)">Every channel out there promises the same thing: more contracts. None of them tell you what it actually costs once you strip away the pitch. So here it is, in plain terms.</p>
 
-    <div class="compare-wrap">
-      <table class="compare">
-        <thead>
-          <tr><th>Channel</th><th>Uncertainty</th><th>Price</th><th>Logistical intensity</th></tr>
-        </thead>
-        <tbody>
-          <tr class="us">
-            <td>Agentiklabs (walkthroughs)</td>
-            <td>Every walkthrough is checked against 6 written criteria before it counts. Doesn't meet the bar, or no-show? We replace it free. No guessing.</td>
-            <td>$120 per qualified walkthrough. Plus 10%, only once you actually close the deal.</td>
-            <td>Show up, quote, done. That's the entire job on your end.</td>
-          </tr>
-          <tr>
-            <td>Other lead-gen agencies</td>
-            <td>"Qualified" means whatever they decide it means that month. No standard, no replacement, no accountability once you've signed.</td>
-            <td>Locked into a retainer whether a single appointment shows up or not. Cancel, and you're still out what you already paid.</td>
-            <td>They call it "done for you." What that really means is you find out three months in whether any of it worked.</td>
-          </tr>
-          <tr>
-            <td>Google Ads</td>
-            <td>A click isn't a person. Most of them were never a facility manager, never in your service area, and never going to hire anyone that day.</td>
-            <td>Every dollar disappears the second someone clicks, whether or not it turns into anything. The bill comes whether you win or not.</td>
-            <td>You're now running ad campaigns, building landing pages, and chasing cold leads that ghost you, on top of actually running your cleaning company.</td>
-          </tr>
-          <tr>
-            <td>SEO</td>
-            <td>Six to twelve months of work before you rank for anything, with zero guarantee it ever brings in a real customer.</td>
-            <td>Ongoing content and optimization spend that's nearly impossible to tie back to an actual signed contract.</td>
-            <td>Constant content, constant technical upkeep, forever, just to defend the ranking you already have.</td>
-          </tr>
-          <tr>
-            <td>Cold calls</td>
-            <td>Mostly hang-ups. You have no idea who you're actually reaching until after they've already said no.</td>
-            <td>Cheap on paper. Expensive in the hundreds of hours it eats out of your week.</td>
-            <td>You, or someone on your team, dialing strangers all day, every day, indefinitely.</td>
-          </tr>
-          <tr>
-            <td>Door knocking</td>
-            <td>Pure luck whether the right person is even in the building when you knock.</td>
-            <td>No cash spent, but it costs you entire days you'll never get back.</td>
-            <td>Physically exhausting, doesn't scale past one person walking one street, and the weather decides if you're working today.</td>
-          </tr>
-          <tr>
-            <td>Nextdoor / Angi</td>
-            <td>The exact same lead gets sent to you and three or four other cleaning companies at the exact same time.</td>
-            <td>You're paying for a lead you're now racing to close before someone cheaper or faster gets there first.</td>
-            <td>Whoever calls back in the next ten minutes wins. That's the entire strategy these platforms create.</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="compare-list">
+      <div class="compare-item us">
+        <h3>Agentiklabs (walkthroughs)</h3>
+        <p>Every walkthrough is checked against 6 written criteria before it counts, and gets replaced free if it doesn't meet the bar or the prospect skips it. It's $120 per qualified walkthrough, plus 10% once you actually close the deal. Your side of it: show up, quote, done.</p>
+      </div>
+      <div class="compare-item">
+        <h3>Other lead-gen agencies</h3>
+        <p>"Qualified" means whatever they decide it means that month, with nothing written down and little recourse once you've signed. You're locked into a retainer whether a single appointment shows up or not, and if you cancel early, you're still out what you already paid. They call it "done for you." What that really means is you find out three months in whether any of it worked.</p>
+      </div>
+      <div class="compare-item">
+        <h3>Google Ads</h3>
+        <p>A click isn't a person, and most of them were never a facility manager, never in your service area, and never going to hire anyone that day. Every dollar disappears the second someone clicks, whether or not it turns into anything, and the bill comes whether you win the job or not. On top of that, you're running campaigns, building landing pages, and chasing cold leads that ghost you.</p>
+      </div>
+      <div class="compare-item">
+        <h3>SEO</h3>
+        <p>Six to twelve months of work before you rank for anything, with zero guarantee it ever brings in a real customer. The spend is ongoing, nearly impossible to tie back to an actual signed contract, and it takes constant content and technical upkeep just to defend the ranking you already have.</p>
+      </div>
+      <div class="compare-item">
+        <h3>Cold calls</h3>
+        <p>Mostly hang-ups, and you have no idea who you're actually reaching until after they've already said no. It's cheap on paper but expensive in the hundreds of hours it eats out of your week, with you or someone on your team dialing strangers all day, every day, indefinitely.</p>
+      </div>
+      <div class="compare-item">
+        <h3>Door knocking</h3>
+        <p>Pure luck whether the right person is even in the building when you knock. There's little cash cost, but it eats entire days you'll never get back, and it's physically exhausting, doesn't scale past one person walking one street, with the weather deciding if you're working today.</p>
+      </div>
+      <div class="compare-item">
+        <h3>Nextdoor / Angi</h3>
+        <p>The exact same lead gets sent to you and three or four other cleaning companies at the same time. You're paying for a lead you're now racing to close before someone cheaper or faster gets there first, and whoever calls back in the next ten minutes wins. That's the entire strategy these platforms create.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -327,7 +301,7 @@
   <div class="wrap">
     <span class="eyebrow" style="text-align:center;display:flex;justify-content:center">The offer</span>
     <h2 style="text-align:center">Here's Exactly What This Costs.</h2>
-    <p class="lead-in">No package tiers. No monthly retainer. No lump sum upfront. Just this:</p>
+    <p class="lead-in">It comes down to one flat structure:</p>
 
     <div class="price-card">
       <div class="amt">$120 <sub>/ qualified walkthrough</sub></div>
