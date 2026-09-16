@@ -63,6 +63,20 @@
   .hero .lede{font-size:19px;color:var(--muted);max-width:62ch}
   .hero .lede strong{color:var(--ink)}
 
+  /* comparison table */
+  .compare-wrap{overflow-x:auto;margin-top:36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card)}
+  .compare{width:100%;border-collapse:collapse;min-width:760px}
+  .compare th,.compare td{text-align:left;padding:18px 20px;font-size:14.5px;vertical-align:top;line-height:1.5}
+  .compare thead th{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;
+    letter-spacing:0.05em;border-bottom:2px solid var(--border);font-variation-settings:"opsz" 60,"SOFT" 60}
+  .compare tbody tr{border-bottom:1px solid var(--border)}
+  .compare tbody tr:last-child{border-bottom:none}
+  .compare td:first-child,.compare th:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+  .compare td{color:var(--muted)}
+  .compare tr.us{background:rgba(1,74,85,0.07)}
+  .compare tr.us td{color:var(--ink)}
+  .compare tr.us td:first-child{color:var(--teal)}
+
   /* dark section utility */
   .dark{background:var(--bg-deep);color:rgba(252,255,223,0.82)}
   .dark .eyebrow{color:rgba(252,255,223,0.55)}
@@ -134,35 +148,64 @@
   <a class="back" href="index.html">← Back to site</a>
 </nav>
 
-<!-- ===== HERO / HOOK ===== -->
+<!-- ===== HOW THIS COMPARES ===== -->
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow">For commercial cleaning &amp; janitorial business owners</span>
-    <h1>The Walkthrough Is Everything. Here's Exactly How We Get You One.</h1>
-    <p class="lede">If you run a commercial cleaning or janitorial company, you already know this: you don't lose contracts because your bid was too high. <strong>You lose them because you were never in the room.</strong> This page walks you through exactly how we put you in front of the facility managers, property managers, office managers, and business owners who are already deciding who cleans their building next, inside the zip codes you actually serve. Read the whole thing. The price is at the very bottom, and it'll make a lot more sense once you understand how this actually works.</p>
-  </div>
-</section>
+    <h1>How This Compares to Everything Else You've Tried</h1>
+    <p class="lede">Every channel promises the same thing: more contracts. Here's what actually happens once you look past the pitch, on uncertainty, price, and how much of your own time it eats.</p>
 
-<!-- ===== THE PROBLEM ===== -->
-<section class="dark">
-  <div class="wrap">
-    <span class="eyebrow">The problem</span>
-    <h2>You're Not Competing on Price. You're Competing for Visibility.</h2>
-    <p>Here's what actually happens most months. You put money into Google Ads. Some of it turns into clicks. A few of those clicks turn into calls. Most of those calls were never going to hire you: wrong service area, wrong budget, wrong person on the other end of the phone.</p>
-    <p>By the time you've paid for all of it, the math rarely works out the way the ad platform promised it would.</p>
-    <p>Meanwhile, the facility manager two buildings over from your last job is actively looking for a new cleaning company right now. They're not searching Google. They're asking around, taking calls, and hiring whoever gets in front of them first with something that looks credible.</p>
-    <p><strong>That's the entire game. Not who has the best price. Who gets in the room.</strong></p>
-  </div>
-</section>
-
-<!-- ===== THE MECHANISM ===== -->
-<section>
-  <div class="wrap">
-    <span class="eyebrow">The shift</span>
-    <h2>There's a Simpler Way In: The Walkthrough.</h2>
-    <p>A walkthrough is the moment a real decision-maker, the owner, the facility manager, the office manager, stands in the building with you and lets you see exactly what you'd be bidding on.</p>
-    <p>Everything upstream of that moment, the ad spend, the landing pages, the cold calls that go to voicemail, is just an attempt to manufacture it. Most of it fails before it gets there.</p>
-    <p>We skip the manufacturing process. We reach out directly to decision-makers inside the zip codes you actually serve, and we keep going until a walkthrough lands on your calendar. Not a click. Not a form fill. A real person, in a real building, ready to see your bid.</p>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr><th>Channel</th><th>Uncertainty</th><th>Price</th><th>Logistical intensity</th></tr>
+        </thead>
+        <tbody>
+          <tr class="us">
+            <td>Agentiklabs (walkthroughs)</td>
+            <td>Every walkthrough matches 6 written criteria, or it's replaced free</td>
+            <td>$120 per qualified walkthrough, plus 10% only if you close</td>
+            <td>Show up, quote, done</td>
+          </tr>
+          <tr>
+            <td>Other lead-gen agencies</td>
+            <td>Vague "qualified" definitions, no replacement guarantee</td>
+            <td>Monthly retainer, billed whether or not anything lands</td>
+            <td>Managed for you, but no accountability if it's empty</td>
+          </tr>
+          <tr>
+            <td>Google Ads</td>
+            <td>Clicks aren't people; most were never a real fit</td>
+            <td>Pay per click, budget burns with no guaranteed outcome</td>
+            <td>You manage campaigns, landing pages, and chase cold leads yourself</td>
+          </tr>
+          <tr>
+            <td>SEO</td>
+            <td>Months before ranking, no guarantee of qualified traffic</td>
+            <td>Ongoing content and optimization spend, hard to attribute</td>
+            <td>Constant content production and technical upkeep</td>
+          </tr>
+          <tr>
+            <td>Cold calls</td>
+            <td>Mostly rejection; who you actually reach is a guess</td>
+            <td>Cheap in cash, expensive in hours</td>
+            <td>You or your team on the phone all day, every day</td>
+          </tr>
+          <tr>
+            <td>Door knocking</td>
+            <td>Pure luck whether the right person is even there</td>
+            <td>Low cash cost, very high time cost</td>
+            <td>Physically demanding, doesn't scale, weather-dependent</td>
+          </tr>
+          <tr>
+            <td>Nextdoor / Angi</td>
+            <td>Leads often shared with several competing companies at once</td>
+            <td>Pay per lead, but you're up against everyone else who received it too</td>
+            <td>Race to quote before a competitor beats you to the same lead</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
@@ -184,7 +227,7 @@
       </div>
       <div class="card">
         <div class="num">Step 03</div>
-        <h3>You show up and bid</h3>
+        <h3>You show up and quote</h3>
         <p>We hand you a walkthrough with everything you need to know before you knock on the door. What you do with it from there is up to you.</p>
       </div>
     </div>
@@ -204,7 +247,7 @@
     </div>
     <div class="qual-item">
       <h3><span class="qnum">02</span> Exclusive to you</h3>
-      <p>This lead is never sold or shared with another cleaning company. You're not bidding against three other crews we sent the same walkthrough to. If you're in the room, you're the only cleaning company we put there.</p>
+      <p>This lead is never sold or shared with another cleaning company. You're not quoting against three other crews we sent the same walkthrough to. If you're in the room, you're the only cleaning company we put there.</p>
     </div>
     <div class="qual-item">
       <h3><span class="qnum">03</span> A real decision-maker</h3>
