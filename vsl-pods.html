@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSL Pods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Camera frame (pod 12) — matches the bubble in your recording layout.
+       Press C on the page to drag/resize it; the whole grid follows. */
+    --cam-w: 18.3vw;
+    --cam-h: 32.5vh;
+    --cam-right: 2.8vw;
+    --cam-bottom: 5vh;
+
+    --edge-x: 2.8vw;
+    --edge-top: 5vh;
+    --gap: 1vw;
+
+    /* Palette: pomegranate + beige on near-white */
+    --ink: #2b1f1f;
+    --ink-soft: #5a4a46;
+    --ink-faint: #a8978a;
+    --grenade: #9b1c31;
+    --grenade-soft: rgba(155, 28, 49, 0.14);
+    --beige: #e9dfcf;
+    --line: rgba(120, 96, 70, 0.16);
+    --frame: rgba(150, 118, 82, 0.42);
+    --pod-bg: rgba(236, 224, 204, 0.5);
+    --radius: 18px;
+    --serif: "Instrument Serif", "Canela", "Tiempos Headline", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #f4ede1;
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+  }
+
+  /* Near-white canvas with a whisper of beige */
+  body::before {
+    content: "";
+    position: fixed; inset: -10%;
+    background:
+      radial-gradient(45% 55% at 85% 12%, rgba(226, 211, 188, 0.6), transparent 70%),
+      radial-gradient(40% 50% at 10% 92%, rgba(226, 211, 188, 0.5), transparent 70%),
+      linear-gradient(160deg, #f7f1e7 0%, #efe6d7 100%);
+    z-index: -1;
+  }
+  body.hide-cursor, body.hide-cursor * { cursor: none !important; }
+
+  .stage {
+    position: fixed; inset: 0;
+    padding: var(--edge-top) var(--cam-right) var(--cam-bottom) var(--edge-x);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) var(--cam-w);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) var(--cam-h);
+    gap: var(--gap);
+  }
+
+  /* ---------- Pod: hairline frame + inner passe-partout line, no heavy shadow ---------- */
+  .pod {
+    position: relative;
+    background: var(--pod-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid var(--frame);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgba(60, 40, 20, 0.03);
+    padding: clamp(16px, 1.5vw, 28px);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .7s var(--ease), background .7s var(--ease);
+  }
+  .pod::after {
+    content: "";
+    position: absolute; inset: 5px;
+    border: 1px solid rgba(255, 250, 240, 0.75);
+    border-radius: calc(var(--radius) - 5px);
+    pointer-events: none;
+  }
+
+  .pod-head {
+    display: flex; align-items: baseline; gap: .55em;
+    padding-bottom: clamp(9px, .85vw, 15px);
+    margin-bottom: clamp(10px, .9vw, 16px);
+    border-bottom: 1px solid var(--line);
+  }
+  .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(13px, .95vw, 18px);
+    color: var(--grenade);
+    font-variant-numeric: tabular-nums;
+  }
+  .title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(20px, 1.75vw, 34px);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  /* Profile photo (pod 1), top-right, level with the title */
+  .avatar {
+    margin-left: auto;
+    align-self: center;
+    flex-shrink: 0;
+    width: clamp(34px, 2.7vw, 52px);
+    height: clamp(34px, 2.7vw, 52px);
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  }
+
+  .body {
+    list-style: none;
+    display: flex; flex-direction: column;
+    gap: clamp(5px, .5vw, 9px);
+    filter: blur(9px);
+    opacity: .35;
+    transform: translateY(6px);
+    transition: filter .9s var(--ease), opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .body li {
+    position: relative;
+    padding-left: 1.05em;
+    font-size: clamp(10px, .68vw, 13.5px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  /* Intro line above a pod's bullets (reads into them) */
+  .lead {
+    margin: 0 0 clamp(5px, .45vw, 9px);
+    font-size: clamp(10px, .68vw, 13.5px);
+    line-height: 1.45;
+    color: var(--ink);
+    font-weight: 500;
+    filter: blur(9px); opacity: .35; transform: translateY(6px);
+    transition: filter .9s var(--ease), opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .pod.revealed .lead, .editing .lead { filter: none; opacity: 1; transform: none; }
+
+  /* FAQ pod: question & answer pairs separated by hairlines */
+  .body.faq { gap: 0; }
+  .body.faq li.qa { padding: .3em 0; border-top: 1px solid var(--line); line-height: 1.32; }
+  .body.faq li.qa:first-child { border-top: 0; padding-top: 0; }
+  .body.faq li.qa::before, .body.faq li.qa::after { display: none; }
+  .fq { display: block; position: relative; padding-left: 1.4em; color: var(--ink); font-weight: 500; }
+  .fa { display: block; position: relative; padding-left: 1.4em; margin-top: .05em; color: var(--ink-soft); }
+  .fq::before, .fa::before {
+    position: absolute; left: 0; top: -.05em;
+    font-family: var(--serif); font-style: italic; font-size: 1.2em; line-height: 1.2;
+  }
+  .fq::before { content: "Q"; color: var(--grenade); }
+  .fa::before { content: "A"; color: #2e7d4f; }
+
+  /* Block quote (Apple Notes style): a soft rounded bar on the left, bullets sit inside it */
+  .body { --li-gap: clamp(5px, .5vw, 9px); }
+  .body li.q { padding-left: calc(14px + 1.05em); }
+  .body li.q::before { left: 14px; }
+  .body li.q::after {
+    content: ""; position: absolute; left: 1px; top: .15em; bottom: .15em;
+    width: 3px; border-radius: 3px;
+    background: rgba(120, 96, 70, 0.32);
+  }
+  .body li.q:has(+ li.q)::after { bottom: calc(-1 * var(--li-gap) - .15em); }
+  .body li.q + li.q::after { top: 0; }
+
+  .body li::before {
+    content: "";
+    position: absolute; left: 0; top: .68em;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--grenade);
+  }
+  .body li strong, .body li b { color: var(--ink); font-weight: 600; }
+
+  /* Stepped pod (Price): one bullet per click, previous one gets struck through */
+  .stepped .body li.pending { display: none; }
+  .stepped .body li { animation: stepIn .6s var(--ease) both; }
+  .stepped .body li .t {
+    background: linear-gradient(var(--grenade), var(--grenade)) no-repeat 0 58% / 0% 1.5px;
+    transition: background-size .45s var(--ease), color .45s var(--ease), opacity .45s var(--ease);
+  }
+  .stepped .body li.struck .t { background-size: 100% 1.5px; color: var(--ink-faint); }
+  .stepped .body li.struck .t b { color: var(--ink-faint); }
+  .stepped .body li.struck::before { opacity: .35; }
+  /* Final price: a green price tag */
+  .stepped .body li.final { padding-left: 0; margin-top: .35em; animation: tagIn .7s var(--ease) both; }
+  .stepped .body li.final::before { display: none; }
+  .stepped .body li.final .t {
+    display: inline-flex; align-items: center; gap: .5em;
+    padding: .22em .75em .22em .62em;
+    border: 1.5px solid rgba(46, 125, 79, 0.6);
+    border-radius: 999px;
+    background: rgba(46, 125, 79, 0.1);
+    box-shadow: inset 0 0 0 2px rgba(255, 250, 242, 0.55);
+    color: #1f5c39;
+    font-size: clamp(13px, .95vw, 18px);
+    letter-spacing: -0.01em;
+  }
+  .stepped .body li.final .t::before {
+    content: "";
+    width: .85em; height: .85em; flex-shrink: 0;
+    background: #2e7d4f;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.4'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.4'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .stepped .body li.final .t b { color: #1f5c39; font-weight: 700; }
+  .stepped .body li.final .per { font-size: .62em; font-weight: 500; color: #2e7d4f; margin-left: .15em; }
+  .price-sub {
+    display: block;
+    margin-top: .45em;
+    padding-left: .2em;
+    font-size: clamp(10px, .68vw, 13.5px);
+    font-weight: 500;
+    color: #2e7d4f;
+  }
+  .price-sub::before { content: "✓"; margin-right: .4em; font-weight: 700; }
+  @keyframes tagIn { from { opacity: 0; transform: translateY(6px) scale(.94); } to { opacity: 1; transform: none; } }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .editing .stepped .body li.pending { display: block; }
+  .editing .stepped .body li.struck .t { background-size: 0% 1.5px; color: inherit; }
+
+  /* "If we fall short" pod: short Q&A on top, example timeline below */
+  .has-tl .body li { padding-left: 0; }
+  .has-tl .body li::before { display: none; }
+  .has-tl .body li:first-child { color: var(--ink); font-size: clamp(11px, .76vw, 15px); }
+  .has-tl .body li:first-child b { font-weight: 600; }
+  .has-tl .body { gap: clamp(2px, .25vw, 5px); }
+
+  .tl {
+    --ly: 3.95em;                       /* where the line sits in the track */
+    margin-top: auto;
+    padding-top: clamp(6px, .55vw, 10px);
+    border-top: 1px dashed var(--line);
+    font-size: clamp(9.5px, .62vw, 12px);
+    font-weight: 400;
+    line-height: 1.3;
+    filter: blur(9px); opacity: .35;
+    transition: filter .9s var(--ease) .2s, opacity .9s var(--ease) .2s;
+  }
+  .pod.revealed .tl, .editing .tl { filter: none; opacity: 1; }
+  .tl-label {
+    font-size: .82em; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: .1em;
+  }
+  /* horizontal track: notes + captions above the line, dates + labels below */
+  .tl-track { position: relative; height: calc(var(--ly) + 3em); margin: 0 7px; }
+  .tl-seg { position: absolute; top: calc(var(--ly) - 1.7em); height: 2.3em; cursor: help; }
+  .tl-cap {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; color: var(--ink-faint);
+  }
+  .tl-seg.free .tl-cap { color: #2e7d4f; }
+  .tl-line {
+    position: absolute; left: 0; right: 0; top: 1.7em; height: 1.5px; margin-top: -.75px;
+    background: rgba(120, 96, 70, 0.35);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .8s var(--ease);
+  }
+  .tl-seg.free .tl-line { background: repeating-linear-gradient(to right, #2e7d4f 0 4px, transparent 4px 7px); }
+  .tl-seg i {
+    position: absolute; top: 1.7em; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%;
+    background: var(--ink-soft);
+    transform: scale(0); transition: transform .35s var(--ease);
+  }
+  .tl-seg.free i { background: #2e7d4f; }
+
+  .tl-node {
+    position: absolute; top: var(--ly); transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center;
+    cursor: help; white-space: nowrap;
+    opacity: 0; transition: opacity .5s var(--ease);
+  }
+  .tl-node.first { transform: translateX(-6px); align-items: flex-start; }
+  .tl-node.last { transform: translateX(calc(-100% + 6px)); align-items: flex-end; }
+  .tl-node .dot {
+    width: 10px; height: 10px; margin-top: -5px; border-radius: 50%;
+    background: #f5ecdd; border: 1.5px solid var(--ink-soft);
+  }
+  .tl-node.stop .dot { border-color: var(--grenade); background: #fbeff0; }
+  .tl-node.ok .dot { border-color: #2e7d4f; background: #2e7d4f; box-shadow: 0 0 0 3px rgba(46, 125, 79, 0.14); }
+  .tl-date { margin-top: .4em; font-weight: 500; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .tl-lab { color: var(--ink-faint); }
+  .tl-node.stop .tl-lab { color: var(--grenade); }
+  .tl-node.ok .tl-lab { color: #2e7d4f; }
+
+  /* "Our Process" pod: vertical steps with icons, one per click */
+  .ps { display: flex; flex-direction: column; margin-top: .1em; font-size: clamp(10px, .7vw, 13.5px); }
+  .ps-row {
+    display: grid; grid-template-columns: 2em 1fr; column-gap: .6em; align-items: center;
+    position: relative; padding: .22em 0; cursor: help;
+    opacity: .18; filter: blur(3px);
+    transition: opacity .5s var(--ease), filter .5s var(--ease), transform .5s var(--ease);
+    transform: translateY(3px);
+  }
+  .ps-row.shown { opacity: 1; filter: none; transform: none; }
+  .ps-ico {
+    position: relative; z-index: 1;
+    width: 2em; height: 2em; border-radius: 50%;
+    display: grid; place-items: center;
+    background: #f7f0e4; border: 1.5px solid var(--frame);
+    color: var(--ink-soft);
+  }
+  .ps-ico svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  /* line joining the icons */
+  .ps-row:not(:last-child) .ps-ico::after {
+    content: ""; position: absolute; left: 50%; top: 100%; width: 1.5px; height: .44em; margin-left: -.75px;
+    background: var(--frame);
+  }
+  .ps-lab { color: var(--ink); line-height: 1.25; }
+  .ps-loop { margin-left: .35em; color: var(--grenade); font-weight: 600; }
+  .ps-row.final .ps-ico { background: #2e7d4f; border-color: #2e7d4f; color: #fff; box-shadow: 0 0 0 3px rgba(46, 125, 79, 0.14); }
+  .ps-row.final .ps-lab { color: #1f5c39; font-weight: 600; }
+  body:not(.editing) .has-ps .body:empty { display: none; }
+  .editing .ps-row { opacity: 1; filter: none; transform: none; }
+
+  /* Close-rate gauge (pod 5): three zones, the healthy one in green */
+  .gauge {
+    margin-top: auto;
+    padding-top: clamp(6px, .55vw, 10px);
+    border-top: 1px dashed var(--line);
+    font-size: clamp(9.5px, .62vw, 12px);
+    line-height: 1.3;
+    filter: blur(9px); opacity: .35;
+    transition: filter .9s var(--ease) .2s, opacity .9s var(--ease) .2s;
+  }
+  .body:has(~ .gauge) { margin-bottom: clamp(5px, .45vw, 9px); gap: clamp(2px, .25vw, 5px); }
+  .pod:has(.gauge) .body li { line-height: 1.36; }
+  .pod:has(.gauge) .lead { margin-bottom: clamp(3px, .3vw, 6px); }
+  .pod:has(.gauge) .pod-head { margin-bottom: clamp(7px, .6vw, 12px); padding-bottom: clamp(7px, .6vw, 12px); }
+  .pod:has(.gauge) .g-track { height: 3.5em; }
+  .pod:has(.gauge) .gauge { padding-top: clamp(4px, .4vw, 8px); }
+  .pod:has(.gauge) .g-foot { margin-top: .1em; }
+  .pod.revealed .gauge, .editing .gauge { filter: none; opacity: 1; }
+  .g-track { position: relative; height: 3.9em; margin: .15em 0 0; }
+  .gz { position: absolute; top: 0; height: 3.9em; cursor: help; }
+  .gz-name {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; color: var(--ink-faint);
+    opacity: 0; transition: opacity .5s var(--ease);
+  }
+  .gz.low .gz-name { color: var(--grenade); }
+  .gz.ok .gz-name {
+    top: -.35em;
+    font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.45em; line-height: 1;
+    color: #2e7d4f; transform: translateX(-50%) rotate(-2deg);
+  }
+  .gz-bar {
+    position: absolute; left: 0; right: 0; top: 1.55em; height: 7px;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .7s var(--ease);
+  }
+  .gz.low .gz-bar { background: rgba(155, 28, 49, 0.22); border-radius: 4px 0 0 4px; }
+  .gz.ok .gz-bar { background: #2e7d4f; }
+  .gz.high .gz-bar { background: rgba(176, 134, 60, 0.35); border-radius: 0 4px 4px 0; }
+  .gt {
+    position: absolute; top: calc(1.55em + 7px + .3em); transform: translateX(-50%);
+    font-size: .88em; color: var(--ink-soft); font-variant-numeric: tabular-nums;
+    opacity: 0; transition: opacity .5s var(--ease);
+  }
+  .gt.first { transform: none; }
+  .gt.last { transform: translateX(-100%); }
+  /* small tick marks where the zones meet */
+  .gt:not(.first):not(.last)::before {
+    content: ""; position: absolute; left: 50%; top: calc(-7px - .3em - 2px); width: 1.5px; height: calc(7px + 4px);
+    margin-left: -.75px; background: var(--ink-soft); opacity: .5;
+  }
+  .g-foot { margin-top: .3em; color: var(--ink-soft); font-style: italic; opacity: 0; transition: opacity .6s var(--ease); }
+  .pod.revealed .gz-bar, .editing .gz-bar { transform: scaleX(1); transition-delay: calc(.4s + var(--k) * .35s); }
+  .pod.revealed .gz-name, .editing .gz-name { opacity: 1; transition-delay: calc(.6s + var(--k) * .35s); }
+  .pod.revealed .gt, .editing .gt { opacity: 1; transition-delay: 1.3s; }
+  .pod.revealed .g-foot, .editing .g-foot { opacity: 1; transition-delay: 1.9s; }
+
+  /* hand-drawn notes: "$950" notes, with a wobbly arrow down to the date */
+  .tl-note {
+    position: absolute; top: 0;
+    font-family: "Caveat", "Bradley Hand", cursive;
+    font-size: 1.55em; line-height: 1; white-space: nowrap;
+    color: var(--ink-soft);
+    opacity: 0; transition: opacity .5s var(--ease);
+  }
+  .tl-note.left { left: 14px; transform: rotate(-3deg); }
+  .tl-note.right { right: 14px; transform: rotate(2deg); color: #2e7d4f; }
+  .tl-note svg {
+    position: absolute; top: .55em; width: 1.2em; height: 1.97em; overflow: visible;
+  }
+  .tl-note.left svg { left: -1.05em; }
+  .tl-note.right svg { right: -1.05em; transform: scaleX(-1); }
+  .tl-note path {
+    fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 100; stroke-dashoffset: 100;
+    transition: stroke-dashoffset .7s var(--ease);
+  }
+  .pod.revealed .tl-note, .editing .tl-note { opacity: 1; transition-delay: calc(.5s + var(--k) * .7s); }
+  .pod.revealed .tl-note path, .editing .tl-note path { stroke-dashoffset: 0; transition-delay: calc(.7s + var(--k) * .7s); }
+
+  /* build the timeline left to right when the pod opens */
+  .pod.revealed .tl-node, .editing .tl-node { opacity: 1; transition-delay: calc(.4s + var(--k) * .7s); }
+  .pod.revealed .tl-line, .editing .tl-line { transform: scaleX(1); transition-delay: calc(.6s + var(--k) * .7s); }
+  .pod.revealed .tl-seg i, .editing .tl-seg i { transform: scale(1); transition-delay: calc(.9s + var(--k) * .7s + var(--p) * .08s); }
+
+  .tip {
+    position: fixed; z-index: 40;
+    max-width: 260px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(43, 31, 31, 0.92);
+    color: #f7f1e8;
+    font-size: 12px; line-height: 1.4;
+    pointer-events: none;
+    opacity: 0; transform: translateY(-4px);
+    transition: opacity .2s, transform .2s;
+  }
+  .tip.show { opacity: 1; transform: none; }
+  body.hide-cursor .tip { opacity: 0; }
+
+  /* Guarantee tag: sits at the bottom of the pod like a seal */
+  .note {
+    margin-top: auto;
+    display: flex; align-items: center; gap: .65em;
+    padding: .55em .75em;
+    border: 1.5px solid rgba(46, 125, 79, 0.6);
+    border-radius: 12px;
+    background: rgba(46, 125, 79, 0.08);
+    box-shadow: inset 0 0 0 3px rgba(255, 250, 242, 0.55);
+    color: #2e7d4f;
+    font-size: clamp(10px, .68vw, 13.5px);
+    line-height: 1.35;
+    filter: blur(9px);
+    opacity: .35;
+    transform: translateY(6px);
+    transition: filter .9s var(--ease) .25s, opacity .9s var(--ease) .25s, transform .9s var(--ease) .25s;
+  }
+  .body:has(+ .note) { margin-bottom: clamp(8px, .7vw, 14px); gap: clamp(4px, .38vw, 7px); }
+  .pod:has(.note) .pod-head { margin-bottom: clamp(8px, .7vw, 13px); }
+  .note .seal { width: 1.7em; height: 1.7em; flex-shrink: 0; }
+  .note-text { color: #1f5c39; font-weight: 600; letter-spacing: -0.005em; }
+  .pod.revealed .note, .editing .note { filter: none; opacity: 1; transform: none; }
+  .editing .note-text:empty::before { content: "Add the rule"; color: var(--ink-faint); }
+
+  .pod.revealed .body { filter: blur(0); opacity: 1; transform: none; }
+  .pod.revealed { background: rgba(242, 233, 216, 0.68); }
+
+  /* The pod you just opened: quiet pomegranate hairline */
+  .pod.current { border-color: rgba(155, 28, 49, 0.6); }
+
+  /* ---------- Camera pod ---------- */
+  .pod.cam {
+    grid-column: 4; grid-row: 3;
+    cursor: default;
+    background: rgba(226, 211, 188, 0.4);
+    padding: 0;
+  }
+  .cam-label {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-size: clamp(10px, .65vw, 12px);
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .calibrating .pod.cam {
+    outline: 1.5px dashed var(--grenade);
+    outline-offset: 3px;
+    cursor: move;
+    background: var(--grenade-soft);
+    overflow: visible;
+  }
+  .handle {
+    display: none;
+    position: absolute; top: -7px; left: -7px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--grenade);
+    border: 2px solid #fff;
+    cursor: nwse-resize;
+    z-index: 2;
+  }
+  .calibrating .handle { display: block; }
+
+  /* ---------- Layout mode: draggable column/row splitters ---------- */
+  .splitter {
+    position: fixed;
+    display: none;
+    z-index: 15;
+    touch-action: none;
+  }
+  .layouting .splitter { display: block; }
+  .splitter.v { width: 16px; margin-left: -8px; cursor: col-resize; }
+  .splitter.h { height: 16px; margin-top: -8px; cursor: row-resize; }
+  .splitter::before {
+    content: "";
+    position: absolute;
+    background: var(--grenade);
+    opacity: .35;
+    border-radius: 2px;
+    transition: opacity .2s;
+  }
+  .splitter.v::before { left: 7px; top: 0; bottom: 0; width: 2px; }
+  .splitter.h::before { top: 7px; left: 0; right: 0; height: 2px; }
+  .splitter::after {
+    content: "";
+    position: absolute;
+    background: #fff;
+    border: 1.5px solid var(--grenade);
+    border-radius: 999px;
+  }
+  .splitter.v::after { left: 3px; top: 50%; width: 10px; height: 34px; margin-top: -17px; }
+  .splitter.h::after { top: 3px; left: 50%; height: 10px; width: 34px; margin-left: -17px; }
+  .splitter:hover::before, .splitter.dragging::before { opacity: 1; }
+  .layouting .pod { cursor: default; }
+
+  /* ---------- Edit mode ---------- */
+  .editing .pod { cursor: text; }
+  .editing .body { filter: none; opacity: 1; transform: none; }
+  .editing [contenteditable] { outline: none; border-radius: 4px; transition: background .2s; }
+  .editing [contenteditable]:hover { background: rgba(155, 28, 49, 0.04); }
+  /* Empty fields stay clickable while editing */
+  .editing .title { min-width: 5em; min-height: 1.05em; flex: 1; }
+  .editing .body { min-height: 1.5em; }
+  .editing .title:empty::before { content: "Add title"; color: var(--ink-faint); font-style: italic; }
+  .editing .body:empty::before { content: "Add a point"; color: var(--ink-faint); font-size: clamp(10px, .68vw, 13.5px); }
+  .editing [contenteditable]:focus { background: #fff; box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--grenade-soft); }
+
+  /* ---------- Toolbar: appears only when the mouse moves ---------- */
+  .toolbar {
+    position: fixed; top: 14px; right: 14px;
+    display: flex; gap: 4px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity .35s var(--ease), transform .35s var(--ease);
+    z-index: 20;
+  }
+  .editing .toolbar { opacity: 1; pointer-events: auto; transform: none; }
+  .toolbar button {
+    font: 500 12px/1 var(--sans);
+    color: var(--ink);
+    background: transparent;
+    border: 0; border-radius: 999px;
+    padding: 8px 13px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .toolbar button:hover { background: rgba(120, 96, 70, 0.08); }
+  .toolbar button.primary { background: var(--grenade); color: #fff; }
+  .toolbar button.primary:hover { background: #82162a; }
+  .toolbar .edit-only { display: none; }
+  .editing .toolbar .edit-only { display: inline-block; }
+  .editing .toolbar .view-only { display: none; }
+
+  /* ---------- Marker (right-click + drag) ---------- */
+  #marker { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 35; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; top: 18px;
+    transform: translate(-50%, -12px);
+    background: rgba(43, 31, 31, 0.88);
+    color: #f7f1e8;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 12.5px; letter-spacing: .01em;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s var(--ease), transform .4s var(--ease);
+    white-space: nowrap;
+    z-index: 30;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast kbd {
+    font-family: inherit; font-size: 11px;
+    background: rgba(255,255,255,.14);
+    border-radius: 5px; padding: 1px 6px; margin: 0 2px;
+  }
+</style>
+</head>
+<body>
+<main class="stage" id="stage"></main>
+<div class="toast" id="toast"></div>
+<nav class="toolbar" id="toolbar">
+  <button class="view-only primary" data-act="edit">Edit text</button>
+  <button class="edit-only" data-act="bold" title="Bold / not bold (⌘B)"><b>B</b></button>
+  <button class="edit-only" data-act="quote" title="Block quote (⌘')">❝ Quote</button>
+  <button class="edit-only" data-act="add">+ Bullet</button>
+  <button class="edit-only" data-act="restore">Restore original</button>
+  <button class="edit-only primary" data-act="done">Save</button>
+  <button class="view-only" data-act="camera">Align camera</button>
+  <button class="view-only" data-act="full">Fullscreen</button>
+</nav>
+
+<script>
+/* ============================================================
+   YOUR CONTENT — edit here, or press E on the page to type
+   directly (edits in the page are saved in this browser).
+   3–5 bullets per pod. <b>text</b> makes a word bold.
+   ============================================================ */
+const DEFAULT_PODS = [
+  {"title": "🤵‍♂️ Who is Abdél", "bullets": ["6 Years Leading data science in fast growing companies around the word. (Dubai, US, UK...)", "in 2024, I founded <b>Agentikly.ai, helped dozens companies increase their revenue per employee.</b>", "I now help commercial cleaning companies book more high quality walkthroughs &amp; win big contracts through cold email &amp; cold calling."]},
+  {"title": "🪻 Our Offer", "bullets": ["We will do cold email + cold call on your behalf", "We go through every facility in your service area and find the decision maker at each one.", "We find their email and phone number, verify both, then email and call them to see if they need a commercial cleaning company.", "We guarantee at least 8 qualified walkthroughs a month."]},
+  {"title": "💎 Quality of Walkthroughs", "lead": "For every walkthrough we send you:", "bullets": ["It's with the owner or the person in charge of cleaning.", "They told us they're looking for a cleaning company.", "They're looking for regular, recurring cleaning, not a one-time job.", "It's booked, not just a name and a number."], "note": "If it's missing any of these, it doesn't count toward your 8."},
+  {"title": "🚢 This will only work if", "bullets": ["You must be a serving a large area and not a small suburb (Multiple cities or a full state)", "You schedule the walkthrough by dialing the client 5 to 15 min after we send it your way.", "Third point"]},
+  {"title": "🤝 What We guarantee", "bullets": []},
+  {"title": "🚧  What we do not guarantee", "gauge": true, "lead": "Once the walkthrough is booked, it's in your hands.", "bullets": ["We don't guarantee that every client says yes to your quote." ] },
+  {"title": "💶 Pricing", "bullets": ["Most agencies charge <b>$3,000 / month</b>", "<b>$2,000 / month</b>", "<b>$1,500 / month</b>", "<b>$1,000 / month</b>", "<b>$950 / month</b>"], "stepped": true},
+  {"title": "🧼 If We Fall Short", "timeline": true, "bullets": ["<b>What if we don't book you 8 walkthroughs in a month?</b>", "You don't pay again until we do."]},
+  {"title": "⚙️ Our Process", "process": true, "bullets": []},
+  {"title": "Frequently Asked Questions", "faq": true, "bullets": ["Do you do residential? ||| No. We only work with commercial facilities.", "Am I locked in, or can I cancel anytime? ||| You can cancel anytime. There's no contract.", "Can I exclude certain types of businesses? ||| Yes. During onboarding you fill out a short form with the categories you want us to skip.", "What happens with no-shows or cancellations? ||| We replace the walkthrough.", "How fast can we expect results? ||| Starting in the first 10 days."]},
+  {"title": "Next Steps", "bullets": ["Book a call (Only you are ready to join)", "Get Assistance using our Claude &amp; Chat GPT", "Enjoy Our free content on Youtube"]},
+];
+
+/* ---------- storage (optional; page works without it) ---------- */
+const KEY_PODS = "vslPods.content.v1";
+const KEY_CAM  = "vslPods.camera.v1";
+const load = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+let pods = load(KEY_PODS) || DEFAULT_PODS;
+// Fill in newly added sections, but only where a pod still has its "Pod N" placeholder title
+pods = pods.map((p, i) => /^pod \d+$/i.test((p.title || "").trim()) && !/^pod \d+$/i.test(DEFAULT_PODS[i].title) ? DEFAULT_PODS[i] : p);
+// One-time: turn the saved "Pricing" pod into the stepped price drop (keeps your title)
+const PRICE_DROP = DEFAULT_PODS.find(p => p.stepped);
+const PRICE_SUB = "8 qualified walkthroughs guaranteed";
+const COUNT_RULE = /count toward(s)? your 8/i;
+// FAQ item "question ||| answer": if the answer was typed on the question line, split it at the "?"
+function splitQA(b) {
+  // drop the formatting wrappers Chrome adds while editing (<span style=…>), keep bold
+  const clean = (h) => h.replace(/<\/?span[^>]*>/g, "").replace(/\s*style="[^"]*"/g, "").replace(/&nbsp;/g, " ");
+  let [q, a = ""] = clean(b).split(" ||| ");
+  if (!a.replace(/<[^>]+>|&nbsp;|\s/g, "")) {
+    const m = q.match(/^([\s\S]*?\?)\s*([\s\S]+)$/);
+    if (m && m[2].replace(/<[^>]+>|&nbsp;|\s/g, "")) { q = m[1]; a = m[2]; }
+  }
+  return `${q.trim()} ||| ${a.trim()}`;
+}
+const plain = (h) => h.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/[\u2018\u2019]/g, "'").trim();
+// Split text into { rule, rest }: the "doesn't count toward your 8" sentence vs everything else
+const splitRule = (text) => {
+  const parts = plain(text).split(/(?<=[.!?])\s*(?=\S)/).map(x => x.trim()).filter(Boolean);
+  return { rule: parts.filter(x => COUNT_RULE.test(x)).join(" "), rest: parts.filter(x => !COUNT_RULE.test(x)).join(" ") };
+};
+const QUALITY = 2, GUARANTEE = 3, FALL_SHORT = 5, PROCESS = 7;
+
+/* Example timeline shown in the "If We Fall Short" pod (horizontal).
+   at / from / to = position along the line in %. Short labels on screen, detail in the tooltips. */
+const TIMELINE = {
+  segments: [
+    { from: 0, to: 58, kind: "paid", pips: 5, caption: "5 / 8",
+      tip: "During your first month we book 5 of your 8 walkthroughs." },
+    { from: 58, to: 100, kind: "free", pips: 3, caption: "+3 free",
+      tip: "No invoice. We keep calling and emailing for free until you have all 8." },
+  ],
+  // hand-written notes above the line (left = first date, right = last date)
+  notes: [
+    { side: "left", k: 0, text: "$950" },
+    { side: "right", k: 2, text: "next $950" },
+  ],
+  nodes: [
+    { at: 0, tone: "paid", date: "Nov 14", label: "You join",
+      tip: "You sign up on Nov 14 and pay for your first month." },
+    { at: 58, tone: "stop", date: "Dec 14", label: "No charge",
+      tip: "Your next month would normally start today. You only have 5 of 8, so we don't charge you." },
+    { at: 100, tone: "ok", date: "Dec 22", label: "Billed again",
+      tip: "Your 8th walkthrough is booked. Only now does your next month start." },
+  ],
+};
+if (pods[QUALITY].note === undefined) pods = pods.map((p, i) => {
+  if (i !== GUARANTEE) return p;
+  let bullets = [...p.bullets], note = p.note;
+  if (note === undefined) {
+    const k = bullets.findIndex(b => COUNT_RULE.test(plain(b)));
+    note = DEFAULT_PODS[QUALITY].note;
+    if (k !== -1) {
+      const { rule, rest } = splitRule(bullets[k]);
+      note = rule;
+      if (rest) bullets[k] = rest; else bullets.splice(k, 1);
+    }
+  } else {
+    // Tag accidentally holding extra sentences: move them back to the last bullet
+    const { rule, rest } = splitRule(note);
+    if (rule && rest) { note = rule; bullets.push(rest); }
+  }
+  return { ...p, bullets, note };
+});
+// Pod 6 becomes the "if we fall short" timeline. Its old process steps move to pod 8 if pod 8 is still placeholder text.
+if (!pods.some(p => p.timeline)) {
+  const placeholder = pods[PROCESS].bullets.every(b => /^(first|second|third) point$/i.test(plain(b)));
+  if (placeholder && pods[FALL_SHORT].bullets.length) pods[PROCESS] = { ...pods[PROCESS], bullets: pods[FALL_SHORT].bullets };
+  pods[FALL_SHORT] = { ...pods[FALL_SHORT], timeline: true, bullets: DEFAULT_PODS.find(p => p.timeline).bullets };
+}
+/* Close-rate gauge in "What we do not guarantee" (pod 5). Drawn to scale, 0% to 100%. */
+const GAUGE = {
+  label: "Your close rate",
+  zones: [
+    { kind: "low",  from: 0,  to: 25,  name: "Fix your sales",
+      tip: "Under 25%: the walkthroughs are good, but your pitch, pricing or follow-up needs work." },
+    { kind: "ok",   from: 25, to: 40,  name: "sweet spot",
+      tip: "25% to 40%: the healthy range for most commercial cleaning companies." },
+    { kind: "high", from: 40, to: 100, name: "Too cheap",
+      tip: "Over 40%: almost everyone says yes. You're probably charging too little." },
+  ],
+  footer: "Our job: put you in front of the right people.",
+};
+if (!pods.some(p => p.gauge !== undefined)) {
+  const k = pods.findIndex(p => /not guarantee/i.test(p.title || ""));
+  if (k !== -1) pods[k] = { ...pods[k], gauge: true };
+}
+
+// FAQ pod becomes question & answer pairs, stored as "question ||| answer"
+{
+  const k = pods.findIndex(p => /frequently asked|faq/i.test(p.title || ""));
+  if (k !== -1 && !pods[k].faq) pods[k] = { ...pods[k], faq: true, bullets: DEFAULT_PODS.find(p => p.faq).bullets };
+}
+
+/* "Our Process" pod: one step per click. Short label on screen, detail in the tooltip. */
+const PROCESS_STEPS = [
+  { icon: "map",    label: "Search Google Maps",
+    tip: "We search Google Maps for every commercial facility in your service area." },
+  { icon: "build",  label: "List every facility",
+    tip: "We build a full list of those facilities. Nothing gets skipped." },
+  { icon: "person", label: "Find the decision maker",
+    tip: "For each facility, we find the person who decides on cleaning: the owner or the facility manager." },
+  { icon: "check",  label: "Verify email & phone",
+    tip: "We check every email and phone number, so we only reach real people." },
+  { icon: "phone",  label: "Call & email until they reply", loop: true,
+    tip: "We cold call and cold email them, and keep following up until they answer." },
+  { icon: "cal",    label: "Interested? We send them to you", final: true,
+    tip: "When they say they're interested, we send them to you so you can schedule the walkthrough." },
+];
+{
+  const k = pods.findIndex(p => /our process/i.test(p.title || ""));
+  if (k !== -1 && !pods[k].process) {
+    // my old draft steps (Day 1 / Week 1–2 …) make way for the illustration; anything you wrote yourself stays
+    const drafts = pods[k].bullets.every(b => /^<b>(Day|Week)|Walkthroughs land on your calendar|^(first|second|third) point$/i.test(b));
+    pods[k] = { ...pods[k], process: true, bullets: drafts ? [] : pods[k].bullets };
+  }
+}
+
+// Order: Pricing is pod 6, "If We Fall Short" is pod 7
+{
+  const t = pods.findIndex(p => p.timeline), pr = pods.findIndex(p => p.stepped || /pricing/i.test(p.title || ""));
+  if (t === 5 && pr === 6) [pods[5], pods[6]] = [pods[6], pods[5]];
+}
+// Move the qualification bullets + tag from pod 4 into pod 3; pod 4 is left empty
+if (pods[QUALITY].note === undefined) {
+  const g = pods[GUARANTEE];
+  pods[QUALITY] = { ...pods[QUALITY], bullets: [...pods[QUALITY].bullets, ...g.bullets], note: g.note ?? DEFAULT_PODS[QUALITY].note };
+  const { note, ...rest } = g;
+  pods[GUARANTEE] = { ...rest, bullets: [] };
+}
+pods = pods.map(p => /pricing/i.test(p.title || "") && !p.stepped ? { ...p, stepped: true, bullets: PRICE_DROP.bullets } : p);
+// Approved intro line + wording for these pods (applied once each; your title, tag and extras are kept)
+for (const re of [/quality of walkthroughs/i, /not guarantee/i]) {
+  const k = pods.findIndex(p => re.test(p.title || ""));
+  const d = DEFAULT_PODS.find(p => re.test(p.title) && p.lead !== undefined);
+  if (k !== -1 && d && pods[k].lead === undefined) pods[k] = { ...pods[k], lead: d.lead, bullets: d.bullets };
+}
+// Removed from "What we do not guarantee" on request (also if already saved in this browser)
+{
+  const drop = [/^We don't guarantee that you close the deal\.?$/i, /^We don't guarantee results if you wait too long/i, /^We don't guarantee the size of the contract/i];
+  const k = pods.findIndex(p => /not guarantee/i.test(p.title || ""));
+  if (k !== -1) pods[k] = { ...pods[k], bullets: pods[k].bullets.filter(b => !drop.some(re => re.test(plain(b)))) };
+}
+// FAQ: fix answers typed on the question line
+{
+  const k = pods.findIndex(p => p.faq);
+  if (k !== -1) pods[k] = { ...pods[k], bullets: pods[k].bullets.map(splitQA) };
+}
+// FAQ: add "How fast…" if it isn't there yet (also when already saved in this browser)
+{
+  const k = pods.findIndex(p => p.faq);
+  if (k !== -1 && !pods[k].bullets.some(b => /how fast/i.test(b))) pods[k] = { ...pods[k], bullets: [...pods[k].bullets, "How fast can we expect results? ||| Starting in the first 10 days."] };
+}
+// Last step, after every position-based fix above: "This will only work if" moves up to pod 4,
+// and everything from the old pod 4 onward shifts down one
+{
+  const k = pods.findIndex(p => /only work if/i.test(p.title || ""));
+  if (k > 3) { const [moved] = pods.splice(k, 1); pods.splice(3, 0, moved); }
+}
+const stage = document.getElementById("stage");
+const root = document.documentElement;
+const revealed = new Set();
+const steps = {};   // stepped pod index -> bullets shown
+
+/* ---------- timeline ---------- */
+function timelineHTML() {
+  const esc = (t) => t.replace(/"/g, "&quot;");
+  const segs = TIMELINE.segments.map((g, k) => {
+    const pips = Array.from({ length: g.pips }, (_, n) =>
+      `<i style="left:${((n + 1) / (g.pips + 1)) * 100}%; --p:${n}"></i>`).join("");
+    return `<div class="tl-seg ${g.kind}" data-tip="${esc(g.tip)}" style="left:${g.from}%; width:${g.to - g.from}%; --k:${k}">
+      <span class="tl-cap">${g.caption}</span><span class="tl-line"></span>${pips}</div>`;
+  }).join("");
+  const nodes = TIMELINE.nodes.map((n, k) =>
+    `<div class="tl-node ${n.tone} ${n.at === 0 ? "first" : n.at === 100 ? "last" : ""}" data-tip="${esc(n.tip)}" style="left:${n.at}%; --k:${k}">
+      <span class="dot"></span><span class="tl-date">${n.date}</span><span class="tl-lab">${n.label}</span></div>`).join("");
+  // slightly wobbly arrow, like a pen annotation
+  const arrow = `<svg viewBox="0 0 24 30" preserveAspectRatio="none"><path pathLength="100" d="M22 3 C 14 1.5, 5.5 6, 4.5 13.5 S 5 23, 4 28 M1 23.5 L4 28.4 L8.2 24.6"/></svg>`;
+  const notes = (TIMELINE.notes || []).map(n =>
+    `<div class="tl-note ${n.side}" style="--k:${n.k}">${arrow}${n.text}</div>`).join("");
+  return `<div class="tl"><div class="tl-label">Example</div><div class="tl-track">${notes}${segs}${nodes}</div></div>`;
+}
+
+function gaugeHTML() {
+  const esc = (t) => t.replace(/"/g, "&quot;");
+  const zones = GAUGE.zones.map((z, k) =>
+    `<div class="gz ${z.kind}" data-tip="${esc(z.tip)}" style="left:${z.from}%; width:${z.to - z.from}%; --k:${k}">
+      <span class="gz-name">${z.name}</span><span class="gz-bar"></span></div>`).join("");
+  const stops = [...new Set(GAUGE.zones.flatMap(z => [z.from, z.to]))];
+  const ticks = stops.map(v =>
+    `<span class="gt ${v === 0 ? "first" : v === 100 ? "last" : ""}" style="left:${v}%">${v}%</span>`).join("");
+  return `<div class="gauge">
+    <div class="tl-label">${GAUGE.label}</div>
+    <div class="g-track">${zones}${ticks}</div>
+    <div class="g-foot">${GAUGE.footer}</div>
+  </div>`;
+}
+
+const ICONS = {
+  map:    '<path d="M12 21s-6-5.4-6-10.2a6 6 0 0 1 12 0C18 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.1"/>',
+  build:  '<rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M9 7.5h1.5M13.5 7.5H15M9 11h1.5M13.5 11H15M10.5 20.5v-4h3v4"/>',
+  person: '<circle cx="12" cy="8.2" r="3.4"/><path d="M5.2 20c1.1-3.4 3.8-5.2 6.8-5.2s5.7 1.8 6.8 5.2"/>',
+  check:  '<circle cx="12" cy="12" r="8"/><path d="M8.6 12.3l2.3 2.3 4.6-4.7"/>',
+  phone:  '<path d="M6.2 4h2.6l1.7 4.3-2.2 1.3a10 10 0 0 0 5.1 5.1l1.3-2.2 4.3 1.7v2.6a2 2 0 0 1-2 2A15 15 0 0 1 4.2 6a2 2 0 0 1 2-2z"/>',
+  cal:    '<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M9 3.5v4M15 3.5v4M9.3 14.6l1.9 1.9 3.6-3.7"/>',
+};
+function processHTML() {
+  const esc = (t) => t.replace(/"/g, "&quot;");
+  const rows = PROCESS_STEPS.map((st, k) =>
+    `<div class="ps-row${st.final ? " final" : ""}" data-tip="${esc(st.tip)}">
+      <span class="ps-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[st.icon]}</svg></span>
+      <span class="ps-lab">${st.label}${st.loop ? '<span class="ps-loop" title="repeats">↻</span>' : ""}</span>
+    </div>`).join("");
+  return `<div class="ps">${rows}</div>`;
+}
+
+/* Tooltip: fixed to the page so a narrow pod never clips it */
+const tip = document.createElement("div");
+tip.className = "tip";
+document.body.appendChild(tip);
+stage.addEventListener("mouseover", (e) => {
+  const row = e.target.closest("[data-tip]");
+  if (!row || !row.closest(".pod.revealed")) { tip.classList.remove("show"); return; }
+  tip.textContent = row.dataset.tip;
+  const r = row.getBoundingClientRect();
+  tip.classList.add("show");
+  const w = tip.offsetWidth;
+  tip.style.left = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2)) + "px";
+  // below the hovered item; flips above only if it would run off the bottom of the screen
+  const below = r.bottom + 8, fits = below + tip.offsetHeight < innerHeight - 8;
+  tip.style.top = (fits ? below : r.top - tip.offsetHeight - 8) + "px";
+});
+stage.addEventListener("mouseleave", () => tip.classList.remove("show"));
+
+/* ---------- render ---------- */
+function render() {
+  stage.innerHTML = "";
+  pods.forEach((p, i) => {
+    const el = document.createElement("article");
+    el.className = "pod";
+    el.dataset.i = i;
+    el.innerHTML = `
+      <div class="pod-head">
+        <span class="num">${String(i + 1).padStart(2, "0")}</span>
+        <h2 class="title">${p.title}</h2>
+        ${i === 0 ? '<img class="avatar" src="media/abdel-pdp.jpg" alt="Abdel">' : ""}
+      </div>
+      ${p.lead !== undefined ? `<p class="lead">${p.lead}</p>` : ""}
+      <ul class="body${p.faq ? " faq" : ""}">${p.bullets.map((b, k) => p.faq
+        ? (([q, a = ""]) => `<li class="qa"><span class="fq">${q}</span><span class="fa">${a}</span></li>`)(b.split(" ||| "))
+        : p.stepped
+        ? (k === p.bullets.length - 1
+            ? `<li><span class="t">${b.replace(/(\/\s*month)/i, '<span class="per">$1</span>')}</span><span class="price-sub">${p.sub ?? PRICE_SUB}</span></li>`
+            : `<li><span class="t">${b}</span></li>`)
+        : (b.startsWith("> ") ? `<li class="q">${b.slice(2)}</li>` : `<li>${b}</li>`)).join("")}</ul>
+      ${p.note !== undefined ? `<div class="note"><svg class="seal" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l7.5 3v5.6c0 4.6-3.1 8.6-7.5 10.4-4.4-1.8-7.5-5.8-7.5-10.4V5.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.6 12.2l2.4 2.4 4.5-4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="note-text">${p.note}</span></div>` : ""}`;
+    if (p.timeline) { el.classList.add("has-tl"); el.insertAdjacentHTML("beforeend", timelineHTML()); }
+    if (p.gauge) el.insertAdjacentHTML("beforeend", gaugeHTML());
+    if (p.process) { el.classList.add("has-ps"); el.insertAdjacentHTML("beforeend", processHTML()); }
+    if (p.stepped) el.classList.add("stepped");
+    el.addEventListener("click", () => { if (!editing && !layouting) toggle(i); });
+    stage.appendChild(el);
+  });
+  const cam = document.createElement("div");
+  cam.className = "pod cam";
+  cam.id = "cam";
+  cam.innerHTML = `<span class="cam-label"></span><span class="handle" id="handle"></span>`;
+  stage.appendChild(cam);
+  bindCamera(cam);
+  paint();
+}
+
+function paint() {
+  const last = [...revealed].pop();
+  stage.querySelectorAll(".pod[data-i]").forEach(el => {
+    const i = +el.dataset.i;
+    el.classList.toggle("revealed", revealed.has(i));
+    el.classList.toggle("current", i === last);
+    if (pods[i].stepped) {
+      const shown = Math.max(steps[i] || 0, 1);
+      const lis = el.querySelectorAll(".body li");
+      lis.forEach((li, k) => {
+        li.classList.toggle("pending", k >= shown);
+        li.classList.toggle("struck", k < shown - 1);
+        li.classList.toggle("final", k === lis.length - 1);
+      });
+    }
+    if (pods[i].process) {
+      const shown = steps[i] || 0;
+      el.querySelectorAll(".ps-row").forEach((row, k) => row.classList.toggle("shown", k < shown || editing));
+    }
+  });
+}
+
+const isStepped = (i) => !!(pods[i].stepped || pods[i].process);
+const stepCount = (i) => pods[i].process ? PROCESS_STEPS.length : pods[i].bullets.length;
+function openPod(i) { revealed.delete(i); revealed.add(i); if (isStepped(i)) steps[i] = 1; paint(); }
+function closePod(i) { revealed.delete(i); delete steps[i]; paint(); }
+function toggle(i) {
+  if (!revealed.has(i)) openPod(i);
+  else if (isStepped(i) && steps[i] < stepCount(i)) { steps[i]++; paint(); }
+  else closePod(i);
+}
+function revealNext() {
+  const last = [...revealed].pop();
+  if (last !== undefined && isStepped(last) && steps[last] < stepCount(last)) { steps[last]++; paint(); return; }
+  const i = pods.findIndex((_, k) => !revealed.has(k));
+  if (i !== -1) openPod(i);
+}
+function hideLast() {
+  const last = [...revealed].pop();
+  if (last === undefined) return;
+  if (isStepped(last) && steps[last] > 1) { steps[last]--; paint(); }
+  else closePod(last);
+}
+
+/* ---------- toast ---------- */
+const toastEl = document.getElementById("toast");
+let toastTimer;
+function toast(html, ms = 2600) {
+  toastEl.innerHTML = html;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  if (ms) toastTimer = setTimeout(() => toastEl.classList.remove("show"), ms);
+}
+const HELP = "<kbd>F</kbd> fullscreen · <kbd>Space</kbd> reveal next · <kbd>←</kbd> hide · <kbd>R</kbd> reset · <kbd>E</kbd> edit · <kbd>Esc</kbd> save · <kbd>C</kbd> align camera · <kbd>L</kbd> resize columns/rows · right-click + drag = marker";
+
+/* ---------- bold / not bold on the selected text (uses <b>, never inline styles) ---------- */
+function toggleBold() {
+  document.execCommand("styleWithCSS", false, false);
+  document.execCommand("bold");
+  save(KEY_PODS, readPods());
+}
+/* Block quote, like Apple Notes: every bullet the selection touches goes inside the quote block.
+   If they're all quoted already, they come back out. */
+function toggleQuote() {
+  const sel = getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const lis = [...stage.querySelectorAll(".pod[data-i] .body li")].filter(li => range.intersectsNode(li));
+  if (!lis.length) return;
+  const on = !lis.every(li => li.classList.contains("q"));
+  lis.forEach(li => li.classList.toggle("q", on));
+  save(KEY_PODS, readPods());
+}
+// keep the text selection when clicking toolbar buttons
+document.getElementById("toolbar").addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+
+/* ---------- edit mode (autosaves as you type) ---------- */
+let editing = false;
+function readPods() {
+  return [...stage.querySelectorAll(".pod[data-i]")].map((el, i) => ({
+    ...pods[i],
+    title: el.querySelector(".title").textContent.trim(),
+    ...(el.querySelector(".lead") ? { lead: el.querySelector(".lead").innerHTML.replace(/<br\s*\/?>/g, "").replace(/&nbsp;/g, " ").trim() } : {}),
+    ...(el.querySelector(".note-text") ? { note: el.querySelector(".note-text").textContent.trim() } : {}),
+    ...(el.querySelector(".price-sub") ? { sub: el.querySelector(".price-sub").textContent.trim() } : {}),
+    bullets: [...el.querySelectorAll(".body li")]
+      .map(li => li.querySelector(".fq")
+        ? [false, splitQA([li.querySelector(".fq"), li.querySelector(".fa")].map(n => n ? n.innerHTML.replace(/<br\s*\/?>/g, "").replace(/&nbsp;/g, " ").trim() : "").join(" ||| "))]
+        : [li.classList.contains("q"), (li.querySelector(".t") || li).innerHTML.replace(/<span class="per">(.*?)<\/span>/g, "$1").replace(/<br\s*\/?>/g, "").replace(/\s*style="([^"]*)"/g, (m, css) => /font-weight/.test(css) ? ` style="${css.split(";").filter(d => /font-weight/.test(d)).join(";")}"` : "").replace(/&nbsp;/g, " ").trim()])
+      .filter(([, html]) => html && html !== " ||| ")
+      .map(([q, html]) => (q ? "> " : "") + html),
+  }));
+}
+function setEditing(on) {
+  editing = on;
+  document.body.classList.toggle("editing", on);
+  stage.querySelectorAll(".title, .body, .note-text, .lead").forEach(n => n.contentEditable = on ? "true" : "false");
+  stage.querySelectorAll(".price-sub").forEach(n => n.contentEditable = on ? "true" : "false");
+  if (on) {
+    toast("Editing · <kbd>⌘B</kbd> bold · <kbd>⌘'</kbd> quote · Enter = new bullet · <kbd>Esc</kbd> to save", 3000);
+  } else {
+    pods = readPods();
+    save(KEY_PODS, pods);
+    render();
+    toast("Saved", 1200);
+  }
+}
+stage.addEventListener("input", () => { if (editing) save(KEY_PODS, readPods()); });
+stage.addEventListener("keydown", (e) => {
+  if (editing && e.key === "Enter" && e.target.classList.contains("title")) { e.preventDefault(); e.target.blur(); }
+});
+// Keep pasted text plain so styling never breaks
+stage.addEventListener("paste", (e) => {
+  if (!editing) return;
+  e.preventDefault();
+  document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text/plain"));
+});
+let lastFocusedPod = 0;
+stage.addEventListener("focusin", (e) => { const p = e.target.closest(".pod[data-i]"); if (p) lastFocusedPod = +p.dataset.i; });
+
+document.getElementById("toolbar").addEventListener("click", (e) => {
+  const act = e.target.closest("button")?.dataset.act;
+  if (act === "edit") setEditing(true);
+  else if (act === "done") setEditing(false);
+  else if (act === "bold") toggleBold();
+  else if (act === "quote") toggleQuote();
+  else if (act === "add") {
+    const ul = stage.querySelector(`.pod[data-i="${lastFocusedPod}"] .body`);
+    const li = document.createElement("li"); li.textContent = "New point";
+    ul.appendChild(li);
+    const r = document.createRange(); r.selectNodeContents(li);
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    ul.focus();
+    save(KEY_PODS, readPods());
+  }
+  else if (act === "restore") {
+    if (!confirm("Replace all your edits with the original text?")) return;
+    try { localStorage.removeItem(KEY_PODS); } catch {}
+    pods = DEFAULT_PODS; render(); setEditing(true);
+  }
+  else if (act === "camera") setCalibrating(!calibrating);
+  else if (act === "full") {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else root.requestFullscreen?.().catch(() => {});
+  }
+});
+
+/* ---------- camera calibration ---------- */
+let cam = load(KEY_CAM) || { w: 18.3, h: 32.5, right: 2.8, bottom: 5 };
+function applyCam() {
+  root.style.setProperty("--cam-w", cam.w + "vw");
+  root.style.setProperty("--cam-h", cam.h + "vh");
+  root.style.setProperty("--cam-right", cam.right + "vw");
+  root.style.setProperty("--cam-bottom", cam.bottom + "vh");
+}
+let calibrating = false;
+function setCalibrating(on) {
+  calibrating = on;
+  document.body.classList.toggle("calibrating", on);
+  const label = document.querySelector(".cam-label");
+  if (label) label.textContent = on ? "Your camera" : "";
+  if (on) toast("Drag the frame onto your camera bubble · drag the dot to resize · double-click to reset · <kbd>C</kbd> to finish", 0);
+  else { save(KEY_CAM, cam); toast("Camera position saved", 1200); }
+}
+function bindCamera(el) {
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  el.addEventListener("pointerdown", (e) => {
+    if (!calibrating) return;
+    e.preventDefault();
+    const resizing = e.target.id === "handle";
+    const start = { x: e.clientX, y: e.clientY, ...cam };
+    const move = (ev) => {
+      const dx = (ev.clientX - start.x) / innerWidth * 100;
+      const dy = (ev.clientY - start.y) / innerHeight * 100;
+      if (resizing) {
+        cam.w = clamp(start.w - dx, 8, 40);
+        cam.h = clamp(start.h - dy, 12, 60);
+      } else {
+        cam.right = clamp(start.right - dx, 0, 40);
+        cam.bottom = clamp(start.bottom - dy, 0, 40);
+      }
+      applyCam();
+    };
+    const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); };
+    addEventListener("pointermove", move);
+    addEventListener("pointerup", up);
+  });
+  el.addEventListener("dblclick", () => {
+    if (!calibrating) return;
+    cam = { w: 18.3, h: 32.5, right: 2.8, bottom: 5 };
+    applyCam();
+  });
+}
+
+/* ---------- layout mode: drag column / row splitters ----------
+   Columns 1-3 and rows 1-2 share space by ratio. The last column / last row
+   splitter resizes the camera frame (pod 12), anchored bottom-right. */
+const KEY_LAYOUT = "vslPods.layout.v1";
+const DEFAULT_LAYOUT = { cols: [1, 1, 1], rows: [1, 1] };
+let layout = load(KEY_LAYOUT) || structuredClone(DEFAULT_LAYOUT);
+let layouting = false;
+
+function applyLayout() {
+  stage.style.gridTemplateColumns = layout.cols.map(c => `minmax(0, ${c}fr)`).join(" ") + " var(--cam-w)";
+  stage.style.gridTemplateRows = layout.rows.map(r => `minmax(0, ${r}fr)`).join(" ") + " var(--cam-h)";
+  placeSplitters();
+}
+
+const splitters = [];
+["v", "v", "v", "h", "h"].forEach((dir, n) => {
+  const el = document.createElement("div");
+  el.className = "splitter " + dir;
+  el.dataset.n = n;
+  document.body.appendChild(el);
+  splitters.push(el);
+});
+
+function podRect(i) { return stage.children[i].getBoundingClientRect(); }
+function placeSplitters() {
+  if (!layouting) return;
+  const first = podRect(0), lastCol = podRect(3), lastRow = podRect(8);
+  const gap = podRect(1).left - first.right;
+  splitters.forEach((el, n) => {
+    if (n < 3) {
+      el.style.left = (podRect(n).right + gap / 2) + "px";
+      el.style.top = first.top + "px";
+      el.style.height = (lastRow.bottom - first.top) + "px";
+    } else {
+      const r = n - 3;
+      el.style.top = (podRect(r * 4).bottom + gap / 2) + "px";
+      el.style.left = first.left + "px";
+      el.style.width = (lastCol.right - first.left) + "px";
+    }
+  });
+}
+
+splitters.forEach((el) => {
+  const n = +el.dataset.n;
+  el.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    el.classList.add("dragging");
+    const x0 = e.clientX, y0 = e.clientY;
+    const colPx = [0, 1, 2].map(i => podRect(i).width);
+    const rowPx = [0, 1].map(r => podRect(r * 4).height);
+    const cam0 = { ...cam };
+    const MIN = 170;
+    const move = (ev) => {
+      const dx = ev.clientX - x0, dy = ev.clientY - y0;
+      if (n < 2) {                       // between two content columns
+        const total = colPx[n] + colPx[n + 1];
+        const a = Math.max(MIN, Math.min(total - MIN, colPx[n] + dx));
+        layout.cols = colPx.slice(); layout.cols[n] = a; layout.cols[n + 1] = total - a;
+      } else if (n === 2) {              // column 3 | camera column
+        cam.w = Math.max(8, Math.min(40, cam0.w - dx / innerWidth * 100));
+        applyCam();
+      } else if (n === 3) {              // row 1 | row 2
+        const total = rowPx[0] + rowPx[1];
+        const a = Math.max(110, Math.min(total - 110, rowPx[0] + dy));
+        layout.rows = [a, total - a];
+      } else {                           // row 2 | camera row
+        cam.h = Math.max(12, Math.min(60, cam0.h - dy / innerHeight * 100));
+        applyCam();
+      }
+      applyLayout();
+    };
+    const up = () => {
+      el.classList.remove("dragging");
+      removeEventListener("pointermove", move);
+      removeEventListener("pointerup", up);
+      save(KEY_LAYOUT, layout); save(KEY_CAM, cam);
+    };
+    addEventListener("pointermove", move);
+    addEventListener("pointerup", up);
+  });
+  // Double-click a splitter to even out that pair again
+  el.addEventListener("dblclick", () => {
+    if (n < 2) { const avg = (layout.cols[n] + layout.cols[n + 1]) / 2; layout.cols[n] = layout.cols[n + 1] = avg; }
+    else if (n === 3) layout.rows = [1, 1];
+    applyLayout(); save(KEY_LAYOUT, layout);
+  });
+});
+
+function setLayouting(on) {
+  layouting = on;
+  document.body.classList.toggle("layouting", on);
+  placeSplitters();
+  if (on) toast("Drag the lines to resize · double-click a line to even it out · <kbd>L</kbd> or <kbd>Esc</kbd> to finish", 3500);
+  else { save(KEY_LAYOUT, layout); save(KEY_CAM, cam); toast("Layout saved", 1200); }
+}
+addEventListener("resize", placeSplitters);
+
+/* ---------- keys ---------- */
+addEventListener("keydown", (e) => {
+  if (editing) {
+    if (e.key === "Escape" || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s")) { e.preventDefault(); setEditing(false); }
+    else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") { e.preventDefault(); toggleBold(); }
+    else if ((e.metaKey || e.ctrlKey) && e.key === "'") { e.preventDefault(); toggleQuote(); }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if (k === " " || k === "arrowright" || k === "arrowdown" || k === "enter") { e.preventDefault(); revealNext(); }
+  else if (k === "arrowleft" || k === "arrowup" || k === "backspace") { e.preventDefault(); hideLast(); }
+  else if (k === "r") { revealed.clear(); for (const k2 in steps) delete steps[k2]; paint(); }
+  else if (k === "f") {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else root.requestFullscreen?.().catch(() => {});
+  }
+  else if (k === "e") setEditing(true);
+  else if (k === "c") setCalibrating(!calibrating);
+  else if (k === "l") setLayouting(!layouting);
+  else if (k === "h") toast(HELP, 5000);
+  else if (k === "escape" && calibrating) setCalibrating(false);
+  else if (k === "escape" && layouting) setLayouting(false);
+});
+
+/* ---------- hide cursor when idle (anti-distraction) ---------- */
+let idle;
+addEventListener("mousemove", () => {
+  document.body.classList.remove("hide-cursor");
+  clearTimeout(idle);
+  idle = setTimeout(() => {
+    if (!editing && !calibrating && !layouting) document.body.classList.add("hide-cursor");
+  }, 1800);
+});
+
+/* ---------- marker: hold the RIGHT mouse button and drag to draw.
+   Each stroke stays for a moment, then fades out and is gone 5 seconds after you drew it. ---------- */
+const MARK = { color: "155, 28, 49", width: 3.2, life: 5000, fadeFrom: 2500 };
+const canvas = document.createElement("canvas");
+canvas.id = "marker";
+document.body.appendChild(canvas);
+const ctx = canvas.getContext("2d");
+const strokes = [];
+let drawing = null, raf = 0;
+function sizeCanvas() {
+  const dpr = devicePixelRatio || 1;
+  canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+sizeCanvas();
+addEventListener("resize", sizeCanvas);
+
+function paintMarks() {
+  const now = performance.now();
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  for (let i = strokes.length - 1; i >= 0; i--) {
+    const st = strokes[i];
+    const age = now - st.end;              // timer starts when you release the button
+    if (st !== drawing && age > MARK.life) { strokes.splice(i, 1); continue; }
+    const t = st === drawing || age < MARK.fadeFrom ? 1 : 1 - (age - MARK.fadeFrom) / (MARK.life - MARK.fadeFrom);
+    const alpha = t * t * (3 - 2 * t);     // smooth ease-out fade
+    const pts = st.pts;
+    ctx.strokeStyle = `rgba(${MARK.color}, ${0.9 * alpha})`;
+    ctx.lineWidth = MARK.width; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.shadowColor = `rgba(${MARK.color}, ${0.25 * alpha})`; ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    if (pts.length === 1) ctx.lineTo(pts[0].x + .1, pts[0].y);
+    for (let k = 1; k < pts.length - 1; k++) {
+      const mx = (pts[k].x + pts[k + 1].x) / 2, my = (pts[k].y + pts[k + 1].y) / 2;
+      ctx.quadraticCurveTo(pts[k].x, pts[k].y, mx, my);   // smooth the line
+    }
+    if (pts.length > 1) ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+    ctx.stroke();
+  }
+  raf = strokes.length ? requestAnimationFrame(paintMarks) : 0;
+}
+const kick = () => { if (!raf) raf = requestAnimationFrame(paintMarks); };
+
+addEventListener("pointerdown", (e) => {
+  if (e.button !== 2 || editing) return;
+  e.preventDefault();
+  drawing = { pts: [{ x: e.clientX, y: e.clientY }], end: 0 };
+  strokes.push(drawing);
+  kick();
+});
+addEventListener("pointermove", (e) => {
+  if (!drawing) return;
+  drawing.pts.push({ x: e.clientX, y: e.clientY });
+});
+addEventListener("pointerup", (e) => {
+  if (!drawing || e.button !== 2) return;
+  drawing.end = performance.now();
+  drawing = null;
+  kick();
+});
+// no right-click menu while presenting (still available in edit mode)
+addEventListener("contextmenu", (e) => { if (!editing) e.preventDefault(); });
+
+applyCam();
+render();
+applyLayout();
+</script>
+</body>
+</html>
